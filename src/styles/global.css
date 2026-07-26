@@ -1,0 +1,108 @@
+@import "tailwindcss";
+
+/*
+  Dark is the default palette. The inline script in ThemeScript.astro always sets
+  data-theme on <html> before first paint (from storage, else system preference),
+  so light only ever needs one override block.
+*/
+@theme {
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-mono: var(--font-jbmono), ui-monospace, monospace;
+
+  --color-bg: #0a0e13;
+  --color-surface: #11171f;
+  --color-surface-2: #161e28;
+  --color-line: #212b37;
+  --color-fg: #e8eef5;
+  --color-fg-soft: #b6c2cf;
+  --color-muted: #8695a5;
+  --color-accent: #5eead4;
+  --color-accent-soft: #134e4a;
+  --color-accent-fg: #04211d;
+  --color-warm: #fbbf24;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:root[data-theme="light"] {
+  --color-bg: #f7f9fc;
+  --color-surface: #ffffff;
+  --color-surface-2: #eef2f7;
+  --color-line: #dde4ec;
+  --color-fg: #0d1520;
+  --color-fg-soft: #33445a;
+  --color-muted: #5b6b7d;
+  --color-accent: #0d7d6d;
+  --color-accent-soft: #d3f5ee;
+  --color-accent-fg: #ffffff;
+  --color-warm: #a35d05;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+html {
+  scrollbar-gutter: stable;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background-color: var(--color-accent);
+  color: var(--color-accent-fg);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@utility container-page {
+  width: 100%;
+  margin-inline: auto;
+  max-width: 68rem;
+  padding-inline: max(1rem, env(safe-area-inset-left, 0px))
+    max(1rem, env(safe-area-inset-right, 0px));
+
+  @media (width >= 40rem) {
+    padding-inline: max(1.5rem, env(safe-area-inset-left, 0px))
+      max(1.5rem, env(safe-area-inset-right, 0px));
+  }
+
+  @media (width >= 64rem) {
+    padding-inline: max(2rem, env(safe-area-inset-left, 0px))
+      max(2rem, env(safe-area-inset-right, 0px));
+  }
+}
+
+/* Subtle top-of-page glow; purely decorative, costs nothing to paint. */
+@utility page-glow {
+  background-image: radial-gradient(
+    60rem 30rem at 50% -12rem,
+    color-mix(in oklab, var(--color-accent) 14%, transparent),
+    transparent 70%
+  );
+}

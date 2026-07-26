@@ -1,0 +1,43 @@
+---
+import { site } from '../data/site';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<p class:list={['flex items-center gap-2 text-sm text-muted', className]}>
+  <span class="relative grid size-2 place-items-center" aria-hidden="true">
+    <span class="absolute inset-0 rounded-full bg-accent"></span>
+    <span class="absolute inset-0 animate-ping rounded-full bg-accent opacity-60"></span>
+  </span>
+  <span
+    data-local-time
+    data-tz={site.location.timeZone}
+    data-city={site.location.city}
+    class="tabular-nums"
+  >
+    {site.location.city} &middot; UTC+6
+  </span>
+</p>
+
+<script is:inline>
+  if (!window.__localTime) {
+    window.__localTime = true;
+    const render = () => {
+      for (const el of document.querySelectorAll('[data-local-time]')) {
+        const time = new Intl.DateTimeFormat('en-US', {
+          hour: 'numeric',
+          minute: '2-digit',
+          timeZone: el.dataset.tz,
+        }).format(new Date());
+        el.textContent = `${time} in ${el.dataset.city}`;
+      }
+    };
+    render();
+    document.addEventListener('astro:page-load', render);
+    setInterval(render, 30_000);
+  }
+</script>

@@ -1,0 +1,22 @@
+{
+  "name": "SM Saimul Islam",
+  "short_name": "Saimul",
+  "description": "Product lead and full-stack engineer in Dhaka, Bangladesh.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0e13",
+  "theme_color": "#0a0e13",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

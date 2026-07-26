@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="SM Saimul Islam - Product Lead and Full-stack Engineer">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="0%" r="70%">
+      <stop offset="0%" stop-color="#5eead4" stop-opacity="0.22" />
+      <stop offset="70%" stop-color="#0a0e13" stop-opacity="0" />
+    </radialGradient>
+    <pattern id="grid" width="36" height="36" patternUnits="userSpaceOnUse">
+      <path d="M 36 0 L 0 0 0 36" fill="none" stroke="#212b37" stroke-width="1" />
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="630" fill="#0a0e13" />
+  <rect width="1200" height="630" fill="url(#grid)" opacity="0.55" />
+  <rect width="1200" height="630" fill="url(#glow)" />
+
+  <rect x="48" y="48" width="1104" height="534" rx="28" fill="none" stroke="#212b37" stroke-width="2" />
+  <rect x="64" y="64" width="1072" height="502" rx="20" fill="#11171f" stroke="#212b37" stroke-width="1" />
+
+  <rect x="108" y="120" width="72" height="72" rx="16" fill="#161e28" stroke="#5eead4" stroke-width="2" />
+  <text x="144" y="167" text-anchor="middle" font-family="Liberation Sans, DejaVu Sans, Noto Sans, sans-serif" font-size="32" font-weight="700" fill="#5eead4">SI</text>
+
+  <text x="204" y="150" font-family="Liberation Sans, DejaVu Sans, Noto Sans, sans-serif" font-size="22" font-weight="500" fill="#8695a5">SM SAIMUL ISLAM</text>
+  <text x="204" y="180" font-family="Liberation Sans, DejaVu Sans, Noto Sans, sans-serif" font-size="18" fill="#5eead4">DHAKA / BANGLADESH</text>
+
+  <text x="108" y="300" font-family="Liberation Sans, DejaVu Sans, Noto Sans, sans-serif" font-size="56" font-weight="700" fill="#e8eef5">Product lead and</text>
+  <text x="108" y="372" font-family="Liberation Sans, DejaVu Sans, Noto Sans, sans-serif" font-size="56" font-weight="700" fill="#e8eef5">full-stack engineer.</text>
+
+  <text x="108" y="440" font-family="Liberation Sans, DejaVu Sans, Noto Sans, sans-serif" font-size="24" fill="#b6c2cf">Flutter apps / Next.js platforms / SaaS products</text>
+
+  <rect x="108" y="490" width="180" height="40" rx="20" fill="#134e4a" />
+  <text x="198" y="516" text-anchor="middle" font-family="Liberation Sans, DejaVu Sans, Noto Sans, sans-serif" font-size="16" font-weight="600" fill="#5eead4">Tathirmichil</text>
+
+  <rect x="304" y="490" width="120" height="40" rx="20" fill="#134e4a" />
+  <text x="364" y="516" text-anchor="middle" font-family="Liberation Sans, DejaVu Sans, Noto Sans, sans-serif" font-size="16" font-weight="600" fill="#5eead4">Flow</text>
+
+  <rect x="440" y="490" width="140" height="40" rx="20" fill="#134e4a" />
+  <text x="510" y="516" text-anchor="middle" font-family="Liberation Sans, DejaVu Sans, Noto Sans, sans-serif" font-size="16" font-weight="600" fill="#5eead4">StuDays</text>
+</svg>

@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { buildGraph } from '../lib/seo';
+---
+
+<BaseLayout
+  title="Page not found — SM Saimul Islam"
+  description="That page does not exist. Head back to the work or the homepage."
+  graph={buildGraph()}
+  noindex
+>
+  <section class="container-page flex min-h-[60vh] flex-col justify-center py-20">
+    <p class="font-mono text-sm text-accent">404</p>
+    <h1 class="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
+      This route was never deployed
+    </h1>
+    <p class="mt-4 max-w-md text-fg-soft">
+      The page you asked for does not exist. The work, on the other hand, definitely does.
+    </p>
+    <div class="mt-8 flex flex-wrap gap-3">
+      <a
+        href="/work"
+        class="rounded-lg bg-accent px-5 py-3 font-medium text-accent-fg transition-transform hover:-translate-y-0.5"
+      >
+        See the work
+      </a>
+      <a
+        href="/"
+        class="rounded-lg border border-line px-5 py-3 font-medium text-fg-soft transition-colors hover:border-accent hover:text-accent"
+      >
+        Back home
+      </a>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,167 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import {
+  site,
+  contact,
+  experience,
+  education,
+  certifications,
+  skillGroups,
+} from '../data/site';
+import { projects } from '../data/projects';
+import { buildGraph, breadcrumbNode, profilePageNode } from '../lib/seo';
+
+const graph = buildGraph([
+  profilePageNode(Astro.url.pathname),
+  breadcrumbNode([
+    { name: 'Home', path: '/' },
+    { name: 'About', path: '/about' },
+  ]),
+]);
+
+const projectBySlug = new Map(projects.map((project) => [project.slug, project]));
+---
+
+<BaseLayout
+  title={`About ${site.name} — product lead and engineer in Dhaka`}
+  description="SM Saimul Islam is a product lead and full-stack engineer in Dhaka: Head of Product at Upturn, Tech Lead at StuDays, IELTS instructor at Mentors, and a BBA candidate at IBA, University of Dhaka."
+  graph={graph}
+  ogType="profile"
+>
+  <header class="container-page pt-14 pb-10 sm:pt-20">
+    <p class="font-mono text-xs uppercase tracking-[0.2em] text-accent">About</p>
+    <h1 class="mt-3 max-w-3xl text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
+      Business degree, engineer's hands
+    </h1>
+  </header>
+
+  <!-- Dense, factual prose: the part humans skim and language models quote. -->
+  <section aria-label="Professional summary" class="container-page max-w-2xl">
+    <div class="space-y-5 text-lg text-fg-soft text-pretty">
+      <p>
+        I am <strong class="font-medium text-fg">SM Saimul Islam</strong>, a product lead and
+        full-stack engineer based in {site.location.city}, {site.location.country}. I spent two and
+        a half years as Head of Product at Upturn building Flow, a business operations SaaS, and
+        before that led the technical side of StuDays, a student discount app now live on both the
+        App Store and Google Play.
+      </p>
+      <p>
+        My background is deliberately double-sided. I am a BBA candidate at the Institute of
+        Business Administration, University of Dhaka, and I have written production Flutter and
+        Next.js for over five years. That means I can size a feature against its business case in
+        the morning and ship it in the afternoon, without a translation layer in between.
+      </p>
+      <p>
+        Three years of teaching IELTS at Mentors is the other half of the story. Standing in front
+        of a room full of anxious students every week is the best training there is for explaining
+        a hard technical tradeoff to people who do not write code — founders, clients, and boards
+        included.
+      </p>
+      <p>
+        I work across the whole lifecycle: architecture, build, release, and the production support
+        after launch. Linux system administration, relational databases, and data analysis are the
+        parts I enjoy that most product people outsource.
+      </p>
+    </div>
+  </section>
+
+  <section aria-labelledby="timeline-heading" class="container-page py-16 sm:py-20">
+    <h2 id="timeline-heading" class="text-2xl font-semibold tracking-tight sm:text-3xl">
+      Where I have worked
+    </h2>
+
+    <ol class="mt-10 space-y-0">
+      {
+        experience.map((entry) => {
+          const related = entry.project ? projectBySlug.get(entry.project) : undefined;
+          return (
+            <li class="relative border-l border-line py-6 pl-8 last:pb-0">
+              <span
+                class="absolute -left-[0.3125rem] top-8 size-2.5 rounded-full border-2 border-bg bg-accent"
+                aria-hidden="true"
+              />
+              <p class="font-mono text-xs text-muted">
+                {entry.start} &ndash; {entry.end}
+              </p>
+              <h3 class="mt-2 text-lg font-medium">
+                {entry.role} &middot; <span class="text-accent">{entry.org}</span>
+              </h3>
+              <p class="mt-2 max-w-xl text-sm text-fg-soft text-pretty">{entry.summary}</p>
+              {related && (
+                <a
+                  href={`/work/${related.slug}`}
+                  class="mt-3 inline-block text-sm text-muted underline decoration-line underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
+                >
+                  Read the {related.name} case study &rarr;
+                </a>
+              )}
+            </li>
+          );
+        })
+      }
+    </ol>
+  </section>
+
+  <section aria-labelledby="credentials-heading" class="container-page pb-8">
+    <h2 id="credentials-heading" class="text-2xl font-semibold tracking-tight sm:text-3xl">
+      Education and credentials
+    </h2>
+
+    <div class="mt-10 grid gap-10 sm:grid-cols-2">
+      <div>
+        <h3 class="font-mono text-xs uppercase tracking-[0.16em] text-muted">Education</h3>
+        <ul class="mt-4 space-y-4">
+          {
+            education.map((entry) => (
+              <li>
+                <p class="font-medium">{entry.credential}</p>
+                <p class="mt-1 text-sm text-fg-soft">{entry.org}</p>
+                <p class="mt-1 font-mono text-xs text-muted">
+                  {entry.start} &ndash; {entry.end}
+                </p>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="font-mono text-xs uppercase tracking-[0.16em] text-muted">Certifications</h3>
+        <ul class="mt-4 space-y-3">
+          {
+            certifications.map((cert) => (
+              <li class="text-sm text-fg-soft">{cert.name}</li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="skills-heading" class="container-page py-16">
+    <h2 id="skills-heading" class="text-2xl font-semibold tracking-tight sm:text-3xl">Toolkit</h2>
+    <div class="mt-10 grid gap-8 sm:grid-cols-3">
+      {
+        skillGroups.map((group) => (
+          <div>
+            <h3 class="font-mono text-xs uppercase tracking-[0.16em] text-muted">{group.label}</h3>
+            <ul class="mt-4 space-y-2 text-sm text-fg-soft">
+              {group.items.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+
+    <p class="mt-12 text-fg-soft">
+      Want the short version in your inbox instead?{' '}
+      <a
+        href={`mailto:${contact.email}`}
+        class="text-accent underline decoration-accent/40 underline-offset-4 hover:decoration-accent"
+        >Email me</a
+      >.
+    </p>
+  </section>
+</BaseLayout>

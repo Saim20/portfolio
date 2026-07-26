@@ -1,0 +1,28 @@
+---
+/**
+ * Runs synchronously in <head> so data-theme is set before first paint.
+ * With no stored choice we follow the OS, which keeps the CSS to a single
+ * light override block instead of duplicating it under a media query.
+ */
+---
+
+<script is:inline>
+  (() => {
+    const apply = () => {
+      let theme = null;
+      try {
+        theme = localStorage.getItem('theme');
+      } catch {
+        /* private mode: fall through to the system preference */
+      }
+      if (theme !== 'light' && theme !== 'dark') {
+        theme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      }
+      document.documentElement.dataset.theme = theme;
+    };
+
+    apply();
+    // View transitions swap the <html> attributes, so re-apply after each navigation.
+    document.addEventListener('astro:after-swap', apply);
+  })();
+</script>

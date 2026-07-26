@@ -1,0 +1,164 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/Section.astro';
+import TerminalHero from '../components/TerminalHero.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import LocalTime from '../components/LocalTime.astro';
+import { site, services, skillGroups } from '../data/site';
+import { featuredProjects, projects } from '../data/projects';
+import { buildGraph, itemListNode, projectNode } from '../lib/seo';
+
+const graph = buildGraph([itemListNode(), ...projects.map(projectNode)]);
+
+const stats = [
+  { value: '5+', label: 'years shipping production software' },
+  { value: '4', label: 'products live for real users' },
+  { value: '3', label: 'platforms: web, iOS, Android' },
+];
+---
+
+<BaseLayout
+  title={`${site.name} — ${site.role} in Dhaka`}
+  description={site.description}
+  graph={graph}
+>
+  <section class="container-page pt-10 pb-8 sm:pt-20">
+    <div class="grid items-center gap-8 sm:gap-10 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
+      <div>
+        {
+          site.availability && (
+            <p class="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent-soft/30 px-3 py-1 text-xs text-accent">
+              <span class="size-1.5 rounded-full bg-accent" aria-hidden="true" />
+              {site.availability}
+            </p>
+          )
+        }
+
+        <h1 class="mt-4 text-[1.65rem] font-semibold leading-tight tracking-tight text-balance min-[480px]:text-4xl sm:mt-6 sm:text-5xl lg:text-[3.4rem] lg:leading-[1.05]">
+          I build software products <span class="text-accent">end to end</span> — and keep them
+          running.
+        </h1>
+
+        <p class="mt-4 max-w-xl text-base text-fg-soft text-pretty sm:mt-6 sm:text-lg">
+          I am a product lead and full-stack engineer in Dhaka. Five years of Flutter apps and
+          Next.js platforms, from the first architecture call through app store review and the
+          unglamorous production support afterwards.
+        </p>
+
+        <div class="mt-6 flex flex-col gap-3 min-[400px]:flex-row min-[400px]:flex-wrap min-[400px]:items-center sm:mt-8">
+          <a
+            href="/work"
+            class="rounded-lg bg-accent px-5 py-3 text-center font-medium text-accent-fg transition-transform hover:-translate-y-0.5"
+          >
+            See the work
+          </a>
+          <a
+            href="/contact"
+            class="rounded-lg border border-line px-5 py-3 text-center font-medium text-fg-soft transition-colors hover:border-accent hover:text-accent"
+          >
+            Start a project
+          </a>
+        </div>
+
+        <LocalTime class="mt-8" />
+      </div>
+
+      <div class="min-w-0 lg:pl-4">
+        <TerminalHero />
+      </div>
+    </div>
+
+    <dl class="mt-12 grid grid-cols-1 gap-8 border-t border-line pt-8 sm:mt-16 sm:grid-cols-3 sm:gap-x-6 sm:pt-10">
+      {
+        stats.map((stat) => (
+          <div>
+            <dt class="sr-only">{stat.label}</dt>
+            <dd>
+              <span class="block text-3xl font-semibold tracking-tight text-accent sm:text-4xl">
+                {stat.value}
+              </span>
+              <span class="mt-1 block text-sm text-muted">{stat.label}</span>
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+  </section>
+
+  <Section
+    id="work"
+    kicker="Selected work"
+    title="Products in production, not prototypes"
+    lead="Three of these are live right now. Each case study covers the problem, what I built, and the tradeoffs behind it."
+  >
+    <div class="grid gap-x-8 gap-y-14 sm:grid-cols-2">
+      {
+        featuredProjects.map((project, index) => (
+          <ProjectCard project={project} eager={index === 0} />
+        ))
+      }
+    </div>
+
+    <p class="mt-12">
+      <a
+        href="/work"
+        class="text-sm text-accent underline decoration-accent/40 underline-offset-4 hover:decoration-accent"
+      >
+        All work, including earlier builds &rarr;
+      </a>
+    </p>
+  </Section>
+
+  <Section
+    id="services"
+    kicker="How I help"
+    title="One person for the whole technical scope"
+    lead="A business degree from IBA and five years of shipping code means you get strategy and execution from the same conversation."
+  >
+    <div class="grid gap-6 sm:grid-cols-2">
+      {
+        services.map((service) => (
+          <div class="rounded-xl border border-line bg-surface/60 p-6 transition-colors hover:border-accent/50">
+            <h3 class="font-medium">{service.title}</h3>
+            <p class="mt-2 text-sm text-fg-soft">{service.body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </Section>
+
+  <Section id="stack" kicker="Toolkit" title="What I reach for">
+    <div class="grid gap-8 sm:grid-cols-3">
+      {
+        skillGroups.map((group) => (
+          <div>
+            <h3 class="font-mono text-xs uppercase tracking-[0.16em] text-muted">{group.label}</h3>
+            <ul class="mt-4 space-y-2 text-sm text-fg-soft">
+              {group.items.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+  </Section>
+
+  <section class="container-page py-16">
+    <div class="rounded-2xl border border-line bg-surface/60 p-6 text-center sm:p-12">
+      <h2 class="text-2xl font-semibold tracking-tight sm:text-3xl text-balance">
+        Have something that needs building?
+      </h2>
+      <p class="mx-auto mt-4 max-w-md text-fg-soft">
+        Tell me what you are trying to ship. I will tell you honestly whether I am the right person
+        for it.
+      </p>
+      <a
+        href="/contact"
+        class="mt-8 inline-block rounded-lg bg-accent px-6 py-3 font-medium text-accent-fg transition-transform hover:-translate-y-0.5"
+      >
+        Get in touch
+      </a>
+    </div>
+  </section>
+</BaseLayout>

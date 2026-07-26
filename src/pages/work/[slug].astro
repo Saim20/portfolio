@@ -1,0 +1,168 @@
+---
+import type { GetStaticPaths } from 'astro';
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectPoster from '../../components/ProjectPoster.astro';
+import { projects } from '../../data/projects';
+import { buildGraph, breadcrumbNode, projectNode } from '../../lib/seo';
+
+export const getStaticPaths = (() =>
+  projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }))) satisfies GetStaticPaths;
+
+const { project } = Astro.props;
+
+const graph = buildGraph([
+  breadcrumbNode([
+    { name: 'Home', path: '/' },
+    { name: 'Work', path: '/work' },
+    { name: project.name, path: `/work/${project.slug}` },
+  ]),
+  projectNode(project),
+]);
+
+const others = projects.filter((entry) => entry.slug !== project.slug).slice(0, 2);
+---
+
+<BaseLayout
+  title={`${project.name} — ${project.category} case study`}
+  description={project.summary}
+  graph={graph}
+  ogType="article"
+>
+  <article class="container-page pt-12 pb-8 sm:pt-16">
+    <nav aria-label="Breadcrumb" class="font-mono text-xs text-muted">
+      <a href="/work" class="transition-colors hover:text-accent">work</a>
+      <span aria-hidden="true"> / </span>
+      <span aria-current="page">{project.slug}</span>
+    </nav>
+
+    <header class="mt-8 max-w-3xl">
+      <div class="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs uppercase tracking-[0.16em] text-muted">
+        <span class="text-accent">{project.category}</span>
+        <span aria-hidden="true">/</span>
+        <span>{project.role}</span>
+        <span aria-hidden="true">/</span>
+        <span>{project.period}</span>
+      </div>
+
+      <h1 class="mt-5 text-3xl font-semibold tracking-tight text-balance sm:text-5xl">
+        {project.name}
+      </h1>
+      <p class="mt-5 text-lg text-fg-soft text-pretty">{project.tagline}</p>
+
+      {
+        project.links.length > 0 && (
+          <div class="mt-8 flex flex-wrap gap-3">
+            {project.links.map((link) =>
+              link.primary ? (
+                <a
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener"
+                  class="rounded-lg bg-accent px-4 py-2.5 text-sm font-medium text-accent-fg transition-transform hover:-translate-y-0.5"
+                >
+                  {link.label}
+                </a>
+              ) : (
+                <a
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener"
+                  class="rounded-lg border border-line px-4 py-2.5 text-sm text-fg-soft transition-colors hover:border-accent hover:text-accent"
+                >
+                  {link.label}
+                </a>
+              ),
+            )}
+          </div>
+        )
+      }
+      {
+        !project.live && (
+          <p class="mt-6 text-sm text-muted">
+            This one is no longer publicly reachable — happy to walk through it on a call.
+          </p>
+        )
+      }
+    </header>
+
+    <div class="mt-12 project-card">
+      <ProjectPoster project={project} eager sizes="(min-width: 1024px) 64rem, 100vw" />
+    </div>
+
+    <dl class="mt-12 grid gap-8 border-y border-line py-8 sm:grid-cols-3">
+      {
+        project.highlights.map((highlight) => (
+          <div>
+            <dt class="font-mono text-[0.68rem] uppercase tracking-[0.16em] text-muted">
+              {highlight.label}
+            </dt>
+            <dd class="mt-2 text-sm text-fg">{highlight.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+
+    <div class="mt-14 grid gap-12 lg:grid-cols-[1fr_16rem] lg:gap-16">
+      <div class="max-w-2xl">
+        <h2 class="text-xl font-semibold tracking-tight">The problem</h2>
+        <p class="mt-4 text-fg-soft text-pretty">{project.problem}</p>
+
+        <h2 class="mt-12 text-xl font-semibold tracking-tight">What I built</h2>
+        <ul class="mt-4 space-y-4">
+          {
+            project.approach.map((item) => (
+              <li class="flex gap-3 text-fg-soft">
+                <span class="mt-2.5 size-1.5 shrink-0 rounded-full bg-accent" aria-hidden="true" />
+                <span class="text-pretty">{item}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <aside class="lg:pt-1">
+        <h2 class="font-mono text-xs uppercase tracking-[0.16em] text-muted">Stack</h2>
+        <ul class="mt-4 flex flex-wrap gap-1.5">
+          {
+            project.stack.map((tech) => (
+              <li class="rounded-full border border-line bg-surface px-2.5 py-0.5 font-mono text-[0.68rem] text-muted">
+                {tech}
+              </li>
+            ))
+          }
+        </ul>
+
+        <h2 class="mt-8 font-mono text-xs uppercase tracking-[0.16em] text-muted">Role</h2>
+        <p class="mt-3 text-sm text-fg-soft">{project.role}</p>
+
+        <h2 class="mt-8 font-mono text-xs uppercase tracking-[0.16em] text-muted">Timeline</h2>
+        <p class="mt-3 text-sm text-fg-soft">{project.period}</p>
+      </aside>
+    </div>
+  </article>
+
+  <section aria-labelledby="next-heading" class="container-page py-16">
+    <h2 id="next-heading" class="font-mono text-xs uppercase tracking-[0.2em] text-muted">
+      Next up
+    </h2>
+    <ul class="mt-6 divide-y divide-line border-y border-line">
+      {
+        others.map((entry) => (
+          <li>
+            <a
+              href={`/work/${entry.slug}`}
+              class="group flex flex-col gap-1 py-5 transition-colors sm:flex-row sm:flex-wrap sm:items-baseline sm:justify-between sm:gap-x-6"
+            >
+              <span class="font-medium transition-colors group-hover:text-accent">{entry.name}</span>
+              <span class="text-sm text-muted sm:max-w-[55%] sm:text-right">{entry.tagline}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</BaseLayout>

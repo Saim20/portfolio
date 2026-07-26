@@ -1,0 +1,28 @@
+---
+interface Props {
+  id?: string;
+  kicker?: string;
+  title: string;
+  lead?: string;
+  class?: string;
+}
+
+const { id, kicker, title, lead, class: className = '' } = Astro.props;
+const headingId = id ? `${id}-heading` : undefined;
+---
+
+<section id={id} aria-labelledby={headingId} class:list={['container-page py-12 sm:py-20', className]}>
+  <div class="max-w-2xl">
+    {
+      kicker && (
+        <p class="font-mono text-xs uppercase tracking-[0.2em] text-accent">{kicker}</p>
+      )
+    }
+    <h2 id={headingId} class="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">{title}</h2>
+    {lead && <p class="mt-4 text-fg-soft">{lead}</p>}
+  </div>
+
+  <div class="mt-10">
+    <slot />
+  </div>
+</section>

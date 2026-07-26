@@ -1,0 +1,168 @@
+---
+import { contact } from '../data/site';
+import { projects } from '../data/projects';
+
+/**
+ * The full text is server-rendered, so the content is real HTML for crawlers and
+ * for anyone without JavaScript. The script below replays it as typing.
+ * Lines never wrap (each line scrolls with the body horizontally), which keeps
+ * the reserved height exact and the typing animation shift-free.
+ */
+const lines: Array<{ cmd?: string; out?: string; accent?: boolean }> = [
+  { cmd: 'whoami' },
+  { out: 'SM Saimul Islam — full-stack engineer' },
+  { cmd: 'ls ~/shipped' },
+  { out: projects.map((p) => p.slug).join('  ') },
+  { cmd: 'cat stack.txt' },
+  { out: 'next.js  flutter  typescript  postgres' },
+  { cmd: './contact --now' },
+  { out: contact.email, accent: true },
+];
+---
+
+<div
+  class="overflow-hidden rounded-xl border border-line bg-surface shadow-2xl shadow-black/20"
+  data-terminal
+>
+  <div class="flex min-w-0 items-center gap-2 border-b border-line bg-surface-2 px-3 py-2 sm:gap-3 sm:px-4 sm:py-2.5">
+    <span class="flex shrink-0 gap-1.5" aria-hidden="true">
+      <span class="size-2.5 rounded-full bg-[#ff5f57]"></span>
+      <span class="size-2.5 rounded-full bg-[#febc2e]"></span>
+      <span class="size-2.5 rounded-full bg-[#28c840]"></span>
+    </span>
+    <span class="min-w-0 truncate font-mono text-[0.65rem] text-muted sm:text-xs">saim@dhaka — zsh</span>
+    <button
+      type="button"
+      data-terminal-skip
+      hidden
+      class="ml-auto shrink-0 rounded font-mono text-xs text-muted transition-colors hover:text-accent"
+    >
+      skip
+    </button>
+  </div>
+
+  <div
+    class="terminal-body overflow-x-auto px-3 py-3 font-mono text-[0.72rem] leading-snug sm:px-4 sm:py-3.5 sm:text-[0.8rem]"
+  >
+    <code class="terminal-code">
+      {
+        lines.map((line) => (
+          <span class="terminal-line" data-line>
+            {line.cmd ? (
+              <>
+                <span class="select-none text-accent" aria-hidden="true">$ </span>
+                <span class="text-fg" data-text>
+                  {line.cmd}
+                </span>
+              </>
+            ) : (
+              <span class:list={[line.accent ? 'text-warm' : 'text-fg-soft']} data-text data-instant>
+                {line.out}
+              </span>
+            )}
+          </span>
+        ))
+      }
+    </code>
+  </div>
+</div>
+
+<style>
+  .terminal-code {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .terminal-line {
+    display: block;
+    white-space: pre;
+    line-height: 1.35;
+  }
+
+  .terminal-body {
+    /* 8 lines at the rendered line-height, so nothing moves while typing. */
+    min-height: calc(8 * 1.35em + 1.75rem);
+    scrollbar-width: thin;
+  }
+
+  .terminal-line[data-typing]::after {
+    content: '';
+    display: inline-block;
+    width: 0.55em;
+    height: 1em;
+    translate: 0 0.1em;
+    background-color: var(--color-accent);
+    animation: terminal-caret 1s step-end infinite;
+  }
+
+  @keyframes terminal-caret {
+    50% {
+      opacity: 0;
+    }
+  }
+</style>
+
+<script is:inline>
+  if (!window.__terminal) {
+    window.__terminal = true;
+
+    const run = () => {
+      const terminal = document.querySelector('[data-terminal]');
+      if (!terminal || terminal.dataset.played) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      terminal.dataset.played = 'true';
+      const skip = terminal.querySelector('[data-terminal-skip]');
+      const lines = [...terminal.querySelectorAll('[data-line]')];
+      const parts = lines.map((line) => {
+        const target = line.querySelector('[data-text]');
+        return { line, target, text: target.textContent, instant: 'instant' in target.dataset };
+      });
+
+      let cancelled = false;
+      const finish = () => {
+        cancelled = true;
+        for (const part of parts) {
+          part.target.textContent = part.text;
+          delete part.line.dataset.typing;
+        }
+        if (skip) skip.hidden = true;
+      };
+
+      for (const part of parts) part.target.textContent = '';
+      if (skip) {
+        skip.hidden = false;
+        skip.addEventListener('click', finish, { once: true });
+      }
+
+      const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+      (async () => {
+        await wait(220);
+        for (const part of parts) {
+          if (cancelled) return;
+          part.line.dataset.typing = 'true';
+
+          if (part.instant) {
+            part.target.textContent = part.text;
+            await wait(260);
+          } else {
+            for (const char of part.text) {
+              if (cancelled) return;
+              part.target.textContent += char;
+              await wait(26 + Math.random() * 34);
+            }
+            await wait(200);
+          }
+
+          if (cancelled) return;
+          delete part.line.dataset.typing;
+        }
+        if (skip) skip.hidden = true;
+      })();
+    };
+
+    document.addEventListener('astro:page-load', run);
+  }
+</script>

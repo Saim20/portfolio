@@ -1,0 +1,86 @@
+---
+import { milestones } from '../data/site';
+
+/**
+ * Hidden career log. Opens on the Konami code, or on a triple-click of the logo
+ * for anyone on a touch screen who happens to try it.
+ */
+---
+
+<div
+  id="career-log"
+  hidden
+  class="fixed inset-x-4 bottom-4 z-100 mx-auto max-w-lg overflow-hidden rounded-xl border border-accent/40 bg-surface/95 shadow-2xl backdrop-blur-md sm:inset-x-auto sm:right-6"
+>
+  <div class="flex items-center gap-2 border-b border-line px-4 py-2">
+    <span class="font-mono text-xs text-accent">git log --oneline --author=saim</span>
+    <button
+      type="button"
+      data-egg-close
+      class="ml-auto rounded px-1 font-mono text-xs text-muted hover:text-fg"
+      aria-label="Close career log">esc</button
+    >
+  </div>
+  <ol class="max-h-72 overflow-y-auto px-4 py-3 font-mono text-[0.72rem] leading-relaxed">
+    {
+      milestones.map((entry) => (
+        <li class="flex gap-3 py-0.5">
+          <span class="text-warm">{entry.hash}</span>
+          <span class="text-muted">{entry.date}</span>
+          <span class="text-fg-soft">{entry.text}</span>
+        </li>
+      ))
+    }
+  </ol>
+  <p class="border-t border-line px-4 py-2 font-mono text-[0.65rem] text-muted">
+    you found the easter egg &mdash; there is more where that came from
+  </p>
+</div>
+
+<script is:inline>
+  if (!window.__easterEgg) {
+    window.__easterEgg = true;
+
+    const KONAMI = [
+      'ArrowUp',
+      'ArrowUp',
+      'ArrowDown',
+      'ArrowDown',
+      'ArrowLeft',
+      'ArrowRight',
+      'ArrowLeft',
+      'ArrowRight',
+      'b',
+      'a',
+    ];
+    let progress = 0;
+
+    const panel = () => document.getElementById('career-log');
+    const toggle = (open) => {
+      const el = panel();
+      if (el) el.hidden = !open;
+    };
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') return toggle(false);
+
+      const expected = KONAMI[progress];
+      const key = expected.length === 1 ? event.key.toLowerCase() : event.key;
+      progress = key === expected ? progress + 1 : 0;
+
+      if (progress === KONAMI.length) {
+        progress = 0;
+        toggle(true);
+      }
+    });
+
+    document.addEventListener('click', (event) => {
+      if (event.target.closest('[data-egg-close]')) return toggle(false);
+      // Triple-click the wordmark for the same reveal.
+      if (event.detail >= 3 && event.target.closest('[data-logo]')) {
+        event.preventDefault();
+        toggle(true);
+      }
+    });
+  }
+</script>
