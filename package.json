@@ -1,7 +1,7 @@
 {
   "name": "saimul-portfolio",
   "type": "module",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "description": "Portfolio site for SM Saimul Islam - product lead and full-stack engineer.",
   "engines": {

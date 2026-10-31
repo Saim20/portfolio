@@ -1,0 +1,139 @@
+---
+import { personas } from '../data/personas';
+
+/**
+ * "Who are you?" segmented control. The choice is stored as `html[data-persona]`
+ * (set before paint by ThemeScript) and in localStorage. Hero copy is swapped by
+ * the inline script below; section order and proof-chip emphasis are pure CSS.
+ */
+const options = personas.filter((persona) => persona.id !== 'generic');
+const payload = Object.fromEntries(
+  personas.map((persona) => [
+    persona.id,
+    {
+      headline: persona.headline,
+      intro: persona.intro,
+      cta: persona.cta,
+      secondary: persona.secondary,
+    },
+  ]),
+);
+---
+
+<div class="persona-switch" data-persona-switch>
+  <span class="font-mono text-[0.68rem] uppercase tracking-[0.16em] text-muted">I am</span>
+  <div role="group" aria-label="Tailor this page to you" class="flex flex-wrap gap-1">
+    {
+      options.map((persona) => (
+        <button
+          type="button"
+          data-persona-option={persona.id}
+          aria-pressed="false"
+          class="rounded-full border border-line px-3 py-1 text-xs text-fg-soft transition-colors hover:border-accent/60 hover:text-fg"
+        >
+          {persona.label}
+        </button>
+      ))
+    }
+  </div>
+</div>
+
+<script is:inline type="application/json" data-persona-data set:html={JSON.stringify(payload)} />
+
+<style>
+  .persona-switch {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+  }
+
+  /* Active segment, driven by the html attribute so it is right on first paint. */
+  :global(html[data-persona='hiring']) [data-persona-option='hiring'],
+  :global(html[data-persona='founder']) [data-persona-option='founder'],
+  :global(html[data-persona='browsing']) [data-persona-option='browsing'] {
+    border-color: var(--color-accent);
+    background-color: color-mix(in oklab, var(--color-accent-soft) 40%, transparent);
+    color: var(--color-accent);
+  }
+</style>
+
+<script is:inline>
+  if (!window.__persona) {
+    window.__persona = true;
+
+    const VALID = ['hiring', 'founder', 'browsing'];
+
+    const read = () => {
+      const raw = document.querySelector('[data-persona-data]');
+      if (!raw) return null;
+      try {
+        return JSON.parse(raw.textContent || '{}');
+      } catch {
+        return null;
+      }
+    };
+
+    const setText = (field, text) => {
+      for (const el of document.querySelectorAll(`[data-persona-field="${field}"]`)) {
+        el.textContent = text;
+      }
+    };
+
+    const setLink = (field, link) => {
+      for (const el of document.querySelectorAll(`[data-persona-field="${field}"]`)) {
+        el.textContent = link.label;
+        el.setAttribute('href', link.href);
+      }
+    };
+
+    /** Swap hero copy to the active persona. Safe to call any number of times. */
+    const apply = () => {
+      const data = read();
+      if (!data) return;
+      const id = document.documentElement.dataset.persona;
+      const persona = data[VALID.includes(id) ? id : 'generic'] || data.generic;
+      if (!persona) return;
+
+      const match = persona.headline.match(/^(.*?)\*(.+?)\*(.*)$/);
+      const parts = match
+        ? { before: match[1], accent: match[2], after: match[3] }
+        : { before: persona.headline, accent: '', after: '' };
+      setText('headline-before', parts.before);
+      setText('headline-accent', parts.accent);
+      setText('headline-after', parts.after);
+      setText('intro', persona.intro);
+      setLink('cta', persona.cta);
+      setLink('secondary', persona.secondary);
+
+      for (const button of document.querySelectorAll('[data-persona-option]')) {
+        button.setAttribute('aria-pressed', String(button.dataset.personaOption === id));
+      }
+    };
+
+    window.__applyPersona = apply;
+
+    document.addEventListener('click', (event) => {
+      const button = event.target.closest('[data-persona-option]');
+      if (!button) return;
+      const next = button.dataset.personaOption;
+      const current = document.documentElement.dataset.persona;
+      // Clicking the active option clears the choice.
+      if (current === next) {
+        delete document.documentElement.dataset.persona;
+      } else {
+        document.documentElement.dataset.persona = next;
+      }
+      try {
+        if (current === next) localStorage.removeItem('persona');
+        else localStorage.setItem('persona', next);
+      } catch {
+        /* private mode */
+      }
+      apply();
+      document.dispatchEvent(new CustomEvent('quest:request', { detail: { id: 'persona' } }));
+    });
+
+    document.addEventListener('astro:page-load', apply);
+  }
+</script>

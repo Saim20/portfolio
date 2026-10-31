@@ -1,16 +1,19 @@
 ---
-import { contact } from '../data/site';
+import { site, contact, certifications, skillGroups } from '../data/site';
 import { projects } from '../data/projects';
+import { quests } from '../data/quests';
 
 /**
- * The full text is server-rendered, so the content is real HTML for crawlers and
- * for anyone without JavaScript. The script below replays it as typing.
+ * The full replay text is server-rendered, so the content is real HTML for
+ * crawlers and for anyone without JavaScript. The inline script replays it as
+ * typing; once that finishes (or is skipped) it flags `data-ready` and
+ * src/scripts/terminal.ts turns the last line into a working prompt.
  * Lines never wrap (each line scrolls with the body horizontally), which keeps
  * the reserved height exact and the typing animation shift-free.
  */
 const lines: Array<{ cmd?: string; out?: string; accent?: boolean }> = [
   { cmd: 'whoami' },
-  { out: 'SM Saimul Islam - full-stack engineer' },
+  { out: 'SM Saimul Islam - product lead & full-stack engineer' },
   { cmd: 'ls ~/shipped' },
   { out: projects.map((p) => p.slug).join('  ') },
   { cmd: 'cat stack.txt' },
@@ -18,6 +21,26 @@ const lines: Array<{ cmd?: string; out?: string; accent?: boolean }> = [
   { cmd: './contact --now' },
   { out: contact.email, accent: true },
 ];
+
+const ielts = certifications.find((cert) => cert.highlight);
+
+const payload = {
+  name: site.name,
+  email: contact.email,
+  mail: `mailto:${contact.email}?subject=${encodeURIComponent('Project enquiry')}`,
+  linkedin: contact.linkedin,
+  role: site.role,
+  location: `${site.location.city}, ${site.location.country} (UTC+6)`,
+  stack: skillGroups.flatMap((group) => [...group.items]),
+  ielts: ielts ? `${ielts.name}${ielts.detail ? ` - ${ielts.detail.toLowerCase()}` : ''}` : 'n/a',
+  projects: projects.map((p) => ({
+    slug: p.slug,
+    name: p.name,
+    tagline: p.tagline,
+    href: p.links[0]?.href ?? null,
+  })),
+  quests: quests.map((q) => ({ id: q.id, title: q.title, hint: q.hint })),
+};
 ---
 
 <div
@@ -42,7 +65,7 @@ const lines: Array<{ cmd?: string; out?: string; accent?: boolean }> = [
   </div>
 
   <div
-    class="terminal-body overflow-x-auto px-3 py-3 font-mono text-[0.72rem] leading-snug sm:px-4 sm:py-3.5 sm:text-[0.8rem]"
+    class="terminal-body overflow-x-auto overflow-y-auto px-3 py-3 font-mono text-[0.72rem] leading-snug sm:px-4 sm:py-3.5 sm:text-[0.8rem]"
   >
     <code class="terminal-code">
       {
@@ -63,30 +86,63 @@ const lines: Array<{ cmd?: string; out?: string; accent?: boolean }> = [
           </span>
         ))
       }
+      <span class="terminal-line terminal-prompt" data-terminal-prompt hidden>
+        <span class="select-none text-accent" aria-hidden="true">$ </span>
+        <label for="terminal-input" class="sr-only">Type a command, or help</label>
+        <input
+          id="terminal-input"
+          data-terminal-input
+          type="text"
+          autocomplete="off"
+          autocapitalize="off"
+          autocorrect="off"
+          spellcheck="false"
+          enterkeyhint="go"
+          placeholder="type help"
+          class="terminal-input"
+        />
+      </span>
     </code>
   </div>
+
+  <div
+    data-terminal-chips
+    hidden
+    class="flex flex-wrap gap-1.5 border-t border-line/70 px-3 py-2 sm:px-4"
+    aria-label="Suggested commands"
+  >
+  </div>
+
+  <script is:inline type="application/json" data-terminal-data set:html={JSON.stringify(payload)} />
 </div>
 
-<style>
-  .terminal-code {
+<!-- Global on purpose: terminal.ts creates .terminal-line nodes at runtime, which
+     would miss Astro's scoped-style attribute. Everything is namespaced under [data-terminal]. -->
+<style is:global>
+  [data-terminal] .terminal-code {
     display: flex;
     flex-direction: column;
     gap: 0;
   }
 
-  .terminal-line {
+  [data-terminal] .terminal-line {
     display: block;
     white-space: pre;
     line-height: 1.35;
   }
 
-  .terminal-body {
-    /* 8 lines at the rendered line-height, so nothing moves while typing. */
-    min-height: calc(8 * 1.35em + 1.75rem);
+  [data-terminal] .terminal-body {
+    /* Fixed at 11 lines: room for the prompt and a little output, no layout shift. */
+    height: calc(11 * 1.35em + 1.75rem);
     scrollbar-width: thin;
   }
 
-  .terminal-line[data-typing]::after {
+  [data-terminal] .terminal-prompt {
+    display: flex;
+    align-items: center;
+  }
+
+  [data-terminal] .terminal-line[data-typing]::after {
     content: '';
     display: inline-block;
     width: 0.55em;
@@ -103,6 +159,25 @@ const lines: Array<{ cmd?: string; out?: string; accent?: boolean }> = [
   }
 </style>
 
+<style>
+  .terminal-input {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    border: 0;
+    outline: 0;
+    padding: 0;
+    color: var(--color-fg);
+    font: inherit;
+    line-height: inherit;
+    caret-color: var(--color-accent);
+  }
+
+  .terminal-input::placeholder {
+    color: var(--color-muted);
+  }
+</style>
+
 <script is:inline>
   if (!window.__terminal) {
     window.__terminal = true;
@@ -110,9 +185,14 @@ const lines: Array<{ cmd?: string; out?: string; accent?: boolean }> = [
     const run = () => {
       const terminal = document.querySelector('[data-terminal]');
       if (!terminal || terminal.dataset.played) return;
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
       terminal.dataset.played = 'true';
+
+      const ready = () => {
+        terminal.dataset.ready = 'true';
+      };
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return ready();
+
       const skip = terminal.querySelector('[data-terminal-skip]');
       const lines = [...terminal.querySelectorAll('[data-line]')];
       const parts = lines.map((line) => {
@@ -128,6 +208,7 @@ const lines: Array<{ cmd?: string; out?: string; accent?: boolean }> = [
           delete part.line.dataset.typing;
         }
         if (skip) skip.hidden = true;
+        ready();
       };
 
       for (const part of parts) part.target.textContent = '';
@@ -160,9 +241,14 @@ const lines: Array<{ cmd?: string; out?: string; accent?: boolean }> = [
           delete part.line.dataset.typing;
         }
         if (skip) skip.hidden = true;
+        ready();
       })();
     };
 
     document.addEventListener('astro:page-load', run);
   }
+</script>
+
+<script>
+  import '../scripts/terminal';
 </script>

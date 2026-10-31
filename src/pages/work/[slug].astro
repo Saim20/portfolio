@@ -32,7 +32,11 @@ const others = projects.filter((entry) => entry.slug !== project.slug).slice(0, 
   graph={graph}
   ogType="article"
 >
-  <article class="container-page pt-12 pb-8 sm:pt-16">
+  <article
+    class="container-page pt-12 pb-8 sm:pt-16"
+    data-quest-page={`case-study:${project.slug}`}
+    data-quest-page-total={projects.length}
+  >
     <nav aria-label="Breadcrumb" class="font-mono text-xs text-muted">
       <a href="/work" class="transition-colors hover:text-accent">work</a>
       <span aria-hidden="true"> / </span>

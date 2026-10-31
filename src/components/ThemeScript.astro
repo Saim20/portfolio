@@ -19,6 +19,19 @@
         theme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
       }
       document.documentElement.dataset.theme = theme;
+
+      // Explorer mode persona: same trick, so CSS-driven ordering is right on first paint.
+      let persona = null;
+      try {
+        persona = localStorage.getItem('persona');
+      } catch {
+        /* private mode */
+      }
+      if (persona === 'hiring' || persona === 'founder' || persona === 'browsing') {
+        document.documentElement.dataset.persona = persona;
+      } else {
+        delete document.documentElement.dataset.persona;
+      }
     };
 
     apply();

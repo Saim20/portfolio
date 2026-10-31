@@ -33,6 +33,11 @@ export type Project = {
   highlights: { label: string; value: string }[];
   /** Rendered verbatim into /llms.txt and the meta description. */
   summary: string;
+  /**
+   * One honest behind-the-scenes note, shown only on the /unlocked reward page.
+   * TODO: the current entries are drafted placeholders - replace each with the real story.
+   */
+  commentary: string;
 };
 
 const studaysAppStore =
@@ -74,6 +79,8 @@ export const projects: Project[] = [
     ],
     summary:
       'Tathirmichil is an IBA admission preparation platform: timed mock tests, per-topic analytics, median comparison, a coin and leaderboard system, an instructor admin panel, and a live batch community. Built with Next.js, TypeScript, Supabase, and Firebase on Vercel.',
+    commentary:
+      'The first result-publishing run was synchronous. A full batch submitted a mock within the same minute and the request timed out halfway through scoring. That night is why there is a background worker now - and why I never ship a "publish to everyone" button without a queue behind it.',
   },
   {
     slug: 'flow-upturn',
@@ -107,6 +114,8 @@ export const projects: Project[] = [
     ],
     summary:
       'Flow is a business operations platform by Upturn combining workflow automation, HR (HRIS, attendance, leave, payroll), employee services, onboarding and offboarding, stakeholder management, and financial transactions in one system. Saimul Islam led it as Head of Product from November 2023 to March 2026.',
+    commentary:
+      'Seventeen modules is too many to launch with. Looking back, I would have shipped attendance, leave, and payroll first, charged for them, and let paying customers pull the rest out of us. We built breadth before we had earned it, and the sales conversations got easier only once we started leading with the three modules every company actually asked about.',
   },
   {
     slug: 'studays',
@@ -134,12 +143,15 @@ export const projects: Project[] = [
       'Owned the release pipeline end to end - store review cycles, versioned rollouts, and post-launch fixes across iOS and Android.',
     ],
     highlights: [
+      // Figures from the public App Store listing (iTunes lookup, Nov 2026). Hard-coded on purpose.
+      { label: 'App Store', value: '4.3 / 5 rating, live since Jan 2024, now on v4.1' },
       { label: 'Reach', value: '150+ partner brands in Dhaka' },
       { label: 'Platforms', value: 'iOS, iPadOS, and Android from one codebase' },
-      { label: 'Verification', value: 'In-app digital student ID' },
     ],
     summary:
-      'StuDays is a Flutter app for iOS and Android that gives students in Bangladesh a verified digital student ID and access to discounts from 150+ brands. Saimul Islam was Tech Lead from March 2024 to July 2025.',
+      'StuDays is a Flutter app for iOS and Android that gives students in Bangladesh a verified digital student ID and access to discounts from 150+ brands. Rated 4.3 on the App Store. Saimul Islam was Tech Lead from March 2024 to July 2025.',
+    commentary:
+      'Our first App Store rejection was for the student ID screen: a reviewer could not get past verification because they were, reasonably, not a Bangladeshi student. We added a reviewer demo path the same week. Every store submission since has shipped with a documented test account before the build is even uploaded.',
   },
   {
     slug: 'ki-chole',
@@ -162,6 +174,8 @@ export const projects: Project[] = [
     highlights: [{ label: 'Duration', value: '5-month build and deploy' }],
     summary:
       'Ki Chole? is a mobile ticketing service Saimul Islam built and deployed, including backend maintenance, between June and October 2024.',
+    commentary:
+      'Five months, one developer, and a launch date set by an event that would not move. The lesson was scoping: we cut seat selection to "general admission" in week two and the app shipped on time. The fancy version would have shipped late to an empty venue.',
   },
 ];
 

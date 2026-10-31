@@ -69,6 +69,7 @@ const brief = [
           <li>
             <a
               href={channel.href}
+              data-quest="ready-to-talk"
               class="group flex flex-col gap-1 py-6 sm:flex-row sm:items-center sm:gap-8"
               {...(channel.href.startsWith('http')
                 ? { target: '_blank', rel: 'me noopener' }
@@ -115,6 +116,7 @@ const brief = [
       </ul>
       <a
         href={`mailto:${contact.email}?subject=Project%20enquiry`}
+        data-quest="ready-to-talk"
         class="mt-8 inline-block rounded-lg bg-accent px-5 py-3 font-medium text-accent-fg transition-transform hover:-translate-y-0.5"
       >
         Email me the brief

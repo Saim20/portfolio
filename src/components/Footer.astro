@@ -14,7 +14,11 @@ const year = new Date().getFullYear();
     </div>
 
     <div class="flex flex-col gap-3 text-sm">
-      <a class="break-all text-fg-soft transition-colors hover:text-accent" href={`mailto:${contact.email}`}>
+      <a
+        class="break-all text-fg-soft transition-colors hover:text-accent"
+        href={`mailto:${contact.email}`}
+        data-quest="ready-to-talk"
+      >
         {contact.email}
       </a>
       {
@@ -25,6 +29,7 @@ const year = new Date().getFullYear();
               href={social.href}
               rel="me noopener"
               target="_blank"
+              data-quest="ready-to-talk"
             >
               {social.label}
             </a>

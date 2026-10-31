@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import type { Project } from '../data/projects';
-import { getScreenshot } from '../lib/screenshots';
+import { getScreenshot, getScreens } from '../lib/screenshots';
 
 interface Props {
   project: Project;
@@ -13,6 +13,9 @@ interface Props {
 const { project, eager = false, sizes = '(min-width: 768px) 33rem, 100vw' } = Astro.props;
 const screenshot = getScreenshot(project.slug);
 const isPhone = project.category === 'Mobile app';
+// Up to three portrait screens become a phone composite; the middle one leads.
+const screens = isPhone ? getScreens(project.slug).slice(0, 3) : [];
+const composite = screens.length > 0;
 ---
 
 <div
@@ -39,7 +42,24 @@ const isPhone = project.category === 'Mobile app';
 
   <div class="relative aspect-16/10">
     {
-      screenshot ? (
+      composite ? (
+        <div class="poster composite" style={`--count: ${screens.length}`}>
+          {screens.map((screen, index) => (
+            <div class="phone" style={`--i: ${index}`}>
+              <Image
+                src={screen}
+                alt={index === 0 ? `${project.name} app screens` : ''}
+                sizes="(min-width: 768px) 12rem, 33vw"
+                widths={[240, 360, 480]}
+                loading={eager ? 'eager' : 'lazy'}
+                fetchpriority={eager && index === 1 ? 'high' : 'auto'}
+                decoding="async"
+                class="size-full object-cover object-top"
+              />
+            </div>
+          ))}
+        </div>
+      ) : screenshot ? (
         <Image
           src={screenshot}
           alt={`${project.name} interface`}
@@ -79,17 +99,97 @@ const isPhone = project.category === 'Mobile app';
       repeating-linear-gradient(90deg, var(--color-line) 0 1px, transparent 1px 2.25rem);
   }
 
+  /* Three portrait screens fanned out; the middle one sits forward and larger. */
+  .composite {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 0;
+    padding-top: 7%;
+    overflow: hidden;
+    perspective: 1200px;
+  }
+
+  .phone {
+    position: relative;
+    width: 31%;
+    aspect-ratio: 9 / 16;
+    overflow: hidden;
+    border-radius: 1rem 1rem 0 0;
+    border: 1px solid color-mix(in oklab, var(--project-accent) 40%, var(--color-line));
+    border-bottom: 0;
+    background: var(--color-surface);
+    box-shadow: 0 1.25rem 2.5rem -1rem rgb(0 0 0 / 0.5);
+    transform-origin: bottom center;
+    transition: transform 0.5s var(--ease-out-soft);
+  }
+
+  .phone:nth-child(1) {
+    transform: translate(14%, 10%) rotateY(14deg) scale(0.92);
+    z-index: 1;
+  }
+
+  .phone:nth-child(2) {
+    z-index: 2;
+  }
+
+  .phone:nth-child(3) {
+    transform: translate(-14%, 10%) rotateY(-14deg) scale(0.92);
+    z-index: 1;
+  }
+
+  :global(.project-card:is(:hover, :focus-within)) .phone:nth-child(1) {
+    transform: translate(6%, 6%) rotateY(10deg) scale(0.94);
+  }
+
+  :global(.project-card:is(:hover, :focus-within)) .phone:nth-child(3) {
+    transform: translate(-6%, 6%) rotateY(-10deg) scale(0.94);
+  }
+
+  :global(.project-card:is(:hover, :focus-within)) .phone:nth-child(2) {
+    transform: translateY(-3%);
+  }
+
   .project-frame {
     transition:
       transform 0.4s var(--ease-out-soft),
       box-shadow 0.4s var(--ease-out-soft),
       border-color 0.4s var(--ease-out-soft);
+    transform-style: preserve-3d;
   }
 
-  /* Lift the whole frame when its card is hovered or keyboard-focused. */
+  /* Pointer glare, positioned by ProjectCard's tilt script (--glare-x/--glare-y). */
+  .project-frame::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(
+      28rem 18rem at var(--glare-x, 50%) var(--glare-y, 0%),
+      color-mix(in oklab, var(--project-accent) 18%, transparent),
+      transparent 70%
+    );
+    transition: opacity 0.4s var(--ease-out-soft);
+  }
+
+  /* Lift (and, with a fine pointer, tilt) the frame when its card is hovered or focused. */
   :global(.project-card:is(:hover, :focus-within)) .project-frame {
-    transform: translateY(-0.35rem);
+    transform: perspective(60rem) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg))
+      translateY(-0.35rem);
     border-color: color-mix(in oklab, var(--project-accent) 55%, var(--color-line));
     box-shadow: 0 1.5rem 3rem -1.5rem color-mix(in oklab, var(--project-accent) 40%, transparent);
+  }
+
+  :global(.project-card:hover) .project-frame::after {
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(.project-card:is(:hover, :focus-within)) .project-frame {
+      transform: none;
+    }
   }
 </style>

@@ -19,7 +19,8 @@ export default defineConfig({
   // handles Vercel output conventions (headers, redirects, static hosting).
   adapter: vercel(),
 
-  integrations: [sitemap()],
+  // The explorer-mode reward page is noindex, so keep it out of the sitemap too.
+  integrations: [sitemap({ filter: (page) => !page.endsWith('/unlocked') })],
 
   // Same-origin navigations are prefetched, so page-to-page feels instant.
   prefetch: { prefetchAll: true, defaultStrategy: 'viewport' },

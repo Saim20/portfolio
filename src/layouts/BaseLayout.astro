@@ -8,6 +8,7 @@ import ThemeScript from '../components/ThemeScript.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import EasterEgg from '../components/EasterEgg.astro';
+import QuestHud from '../components/QuestHud.astro';
 import { site } from '../data/site';
 
 interface Props {
@@ -66,5 +67,6 @@ const { title, description, graph, ogType, noindex, image } = Astro.props;
 
     <Footer />
     <EasterEgg />
+    <QuestHud />
   </body>
 </html>

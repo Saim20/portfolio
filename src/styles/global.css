@@ -20,6 +20,7 @@
   --color-accent-soft: #134e4a;
   --color-accent-fg: #04211d;
   --color-warm: #fbbf24;
+  --color-error: #f87171;
 
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -36,6 +37,7 @@
   --color-accent-soft: #d3f5ee;
   --color-accent-fg: #ffffff;
   --color-warm: #a35d05;
+  --color-error: #b91c1c;
 }
 
 :root[data-theme="light"] {
@@ -95,6 +97,49 @@ body {
   @media (width >= 64rem) {
     padding-inline: max(2rem, env(safe-area-inset-left, 0px))
       max(2rem, env(safe-area-inset-right, 0px));
+  }
+}
+
+/*
+  Explorer mode: personas reorder the home sections with `order` on a flex column.
+  Hero stays first (it lives outside the container); the CTA block pins to the end.
+*/
+html[data-persona="hiring"] [data-home-sections] > #now {
+  order: -2;
+}
+
+html[data-persona="founder"] [data-home-sections] > #services {
+  order: -2;
+}
+
+html[data-persona="browsing"] [data-home-sections] > #stack {
+  order: 1;
+}
+
+/*
+  Scroll reveal. Zero JavaScript: the animation is driven by the element's
+  position in the viewport. Browsers without scroll-driven animations get the
+  content as-is, and reduced-motion disables the animation outright.
+*/
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal,
+    .project-card {
+      animation: reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 28%;
+    }
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    translate: 0 1.25rem;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
   }
 }
 

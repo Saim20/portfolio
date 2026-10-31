@@ -1,0 +1,242 @@
+---
+import { quests, QUEST_TOTAL } from '../data/quests';
+
+/**
+ * Explorer mode HUD. Hidden until the first unlock so the first impression is
+ * clean; after that a progress pill sits bottom-left, opens a list of
+ * achievements, and a toast announces each unlock.
+ *
+ * Markup is server-rendered; the script only toggles attributes.
+ */
+const circumference = 2 * Math.PI * 9;
+---
+
+<div data-quest-hud hidden class="pointer-events-none fixed inset-x-0 bottom-0 z-90">
+  <!-- Toast -->
+  <div
+    data-quest-toast
+    role="status"
+    aria-live="polite"
+    class="quest-toast pointer-events-none absolute bottom-20 left-1/2 w-max max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-lg border border-accent/50 bg-surface/95 px-4 py-2.5 font-mono text-xs shadow-2xl backdrop-blur-md"
+  >
+    <span class="text-accent">achievement</span>
+    <span class="text-muted"> / </span>
+    <span class="text-fg" data-quest-toast-title></span>
+  </div>
+
+  <!-- Pill -->
+  <button
+    type="button"
+    data-quest-pill
+    aria-expanded="false"
+    aria-controls="quest-panel"
+    class="quest-pill pointer-events-auto absolute bottom-4 left-4 flex items-center gap-2.5 rounded-full border border-line bg-surface/95 py-1.5 pr-3.5 pl-2 font-mono text-xs text-fg-soft shadow-xl backdrop-blur-md transition-colors hover:border-accent hover:text-fg"
+  >
+    <svg viewBox="0 0 24 24" class="size-6 -rotate-90" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" fill="none" stroke="var(--color-line)" stroke-width="2.5"></circle>
+      <circle
+        data-quest-ring
+        cx="12"
+        cy="12"
+        r="9"
+        fill="none"
+        stroke="var(--color-accent)"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-dasharray={circumference}
+        stroke-dashoffset={circumference}
+        class="transition-[stroke-dashoffset] duration-700 ease-out"></circle>
+    </svg>
+    <span><span data-quest-count>0</span><span class="text-muted"> / {QUEST_TOTAL} explored</span></span>
+  </button>
+
+  <!-- Panel -->
+  <div
+    id="quest-panel"
+    data-quest-panel
+    hidden
+    class="pointer-events-auto absolute bottom-16 left-4 w-[min(22rem,calc(100vw-2rem))] overflow-hidden rounded-xl border border-accent/40 bg-surface/95 shadow-2xl backdrop-blur-md"
+  >
+    <div class="flex items-center gap-2 border-b border-line px-4 py-2">
+      <span class="font-mono text-xs text-accent">explorer mode</span>
+      <button
+        type="button"
+        data-quest-close
+        class="ml-auto rounded px-1 font-mono text-xs text-muted hover:text-fg"
+        aria-label="Close achievements">esc</button
+      >
+    </div>
+    <ol class="max-h-[50vh] overflow-y-auto px-2 py-2">
+      {
+        quests.map((quest) => (
+          <li
+            data-quest-item={quest.id}
+            class="quest-item flex items-start gap-3 rounded-md px-2 py-1.5 font-mono text-[0.72rem] leading-relaxed"
+          >
+            <span class="quest-icon mt-0.5 grid size-5 shrink-0 place-items-center rounded border border-line text-[0.65rem] text-muted">
+              {quest.icon}
+            </span>
+            <span class="min-w-0">
+              <span class="quest-title block text-fg-soft">{quest.title}</span>
+              <span class="quest-hint block text-muted">{quest.hint}</span>
+            </span>
+          </li>
+        ))
+      }
+    </ol>
+    <div class="flex items-center justify-between gap-3 border-t border-line px-4 py-2 font-mono text-[0.65rem] text-muted">
+      <span data-quest-footer>find them all to unlock something</span>
+      <a
+        href="/unlocked"
+        data-quest-reward
+        hidden
+        class="rounded border border-warm/60 px-2 py-0.5 text-warm transition-colors hover:bg-warm hover:text-bg"
+      >
+        open reward &rarr;
+      </a>
+    </div>
+  </div>
+</div>
+
+<style>
+  .quest-toast {
+    opacity: 0;
+    translate: -50% 0.5rem;
+    transition:
+      opacity 0.3s var(--ease-out-soft),
+      translate 0.3s var(--ease-out-soft);
+  }
+
+  .quest-toast[data-show] {
+    opacity: 1;
+    translate: -50% 0;
+  }
+
+  .quest-pill {
+    animation: quest-pill-in 0.5s var(--ease-out-soft) both;
+  }
+
+  @keyframes quest-pill-in {
+    from {
+      opacity: 0;
+      translate: 0 1rem;
+    }
+  }
+
+  [data-quest-hud][data-complete] .quest-pill {
+    border-color: color-mix(in oklab, var(--color-warm) 70%, var(--color-line));
+    color: var(--color-warm);
+  }
+
+  [data-quest-hud][data-complete] [data-quest-ring] {
+    stroke: var(--color-warm);
+  }
+
+  .quest-item[data-done] .quest-icon {
+    border-color: var(--color-accent);
+    background: color-mix(in oklab, var(--color-accent) 18%, transparent);
+    color: var(--color-accent);
+  }
+
+  .quest-item[data-done] .quest-title {
+    color: var(--color-fg);
+  }
+
+  .quest-item:not([data-done]) .quest-title {
+    color: var(--color-muted);
+  }
+
+  .quest-item[data-fresh] {
+    background: color-mix(in oklab, var(--color-accent) 10%, transparent);
+  }
+</style>
+
+<script>
+  import { has, progress, unlocked } from '../scripts/quests';
+
+  const CIRCUMFERENCE = 2 * Math.PI * 9;
+  let toastTimer: number | undefined;
+
+  const hud = () => document.querySelector<HTMLElement>('[data-quest-hud]');
+
+  function render(freshId?: string) {
+    const root = hud();
+    if (!root) return;
+    const { done, total } = progress();
+
+    if (done > 0) root.hidden = false;
+    root.toggleAttribute('data-complete', done >= total);
+
+    const count = root.querySelector('[data-quest-count]');
+    if (count) count.textContent = String(done);
+
+    const ring = root.querySelector<SVGCircleElement>('[data-quest-ring]');
+    if (ring) ring.style.strokeDashoffset = String(CIRCUMFERENCE * (1 - done / total));
+
+    for (const item of root.querySelectorAll<HTMLElement>('[data-quest-item]')) {
+      const id = item.dataset.questItem!;
+      item.toggleAttribute('data-done', has(id));
+      item.toggleAttribute('data-fresh', id === freshId);
+    }
+
+    const footer = root.querySelector('[data-quest-footer]');
+    const reward = root.querySelector<HTMLElement>('[data-quest-reward]');
+    if (footer && reward) {
+      const complete = done >= total;
+      footer.textContent = complete
+        ? 'all found. you have earned this.'
+        : `${total - done} left to unlock something`;
+      reward.hidden = !complete;
+    }
+  }
+
+  function toast(title: string) {
+    const root = hud();
+    const el = root?.querySelector<HTMLElement>('[data-quest-toast]');
+    const text = el?.querySelector('[data-quest-toast-title]');
+    if (!el || !text) return;
+    text.textContent = title;
+    el.setAttribute('data-show', '');
+    window.clearTimeout(toastTimer);
+    toastTimer = window.setTimeout(() => el.removeAttribute('data-show'), 2600);
+  }
+
+  function setOpen(open: boolean) {
+    const root = hud();
+    const panel = root?.querySelector<HTMLElement>('[data-quest-panel]');
+    const pill = root?.querySelector<HTMLElement>('[data-quest-pill]');
+    if (!panel || !pill) return;
+    panel.hidden = !open;
+    pill.setAttribute('aria-expanded', String(open));
+    if (open) render();
+  }
+
+  document.addEventListener('quest:unlock', (event) => {
+    render(event.detail.id);
+    toast(event.detail.done >= event.detail.total ? `${event.detail.title} - all found` : event.detail.title);
+  });
+
+  document.addEventListener('quest:reset', () => {
+    const root = hud();
+    if (root) root.hidden = true;
+    render();
+  });
+
+  document.addEventListener('click', (event) => {
+    const target = event.target as Element | null;
+    if (target?.closest('[data-quest-pill]')) {
+      const panel = hud()?.querySelector<HTMLElement>('[data-quest-panel]');
+      setOpen(Boolean(panel?.hidden));
+      return;
+    }
+    if (target?.closest('[data-quest-close]')) return setOpen(false);
+    if (!target?.closest('[data-quest-panel]')) setOpen(false);
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') setOpen(false);
+  });
+
+  document.addEventListener('astro:page-load', () => render());
+  if (document.readyState !== 'loading' && unlocked().length > 0) render();
+</script>

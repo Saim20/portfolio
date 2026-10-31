@@ -1,5 +1,7 @@
 ---
-interface Props {
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<'section'> {
   id?: string;
   kicker?: string;
   title: string;
@@ -7,12 +9,17 @@ interface Props {
   class?: string;
 }
 
-const { id, kicker, title, lead, class: className = '' } = Astro.props;
+const { id, kicker, title, lead, class: className = '', ...rest } = Astro.props;
 const headingId = id ? `${id}-heading` : undefined;
 ---
 
-<section id={id} aria-labelledby={headingId} class:list={['container-page py-12 sm:py-20', className]}>
-  <div class="max-w-2xl">
+<section
+  id={id}
+  aria-labelledby={headingId}
+  class:list={['container-page py-12 sm:py-20', className]}
+  {...rest}
+>
+  <div class="reveal max-w-2xl">
     {
       kicker && (
         <p class="font-mono text-xs uppercase tracking-[0.2em] text-accent">{kicker}</p>

@@ -33,7 +33,7 @@ import { milestones } from '../data/site';
     }
   </ol>
   <p class="border-t border-line px-4 py-2 font-mono text-[0.65rem] text-muted">
-    you found the easter egg &mdash; there is more where that came from
+    you found the easter egg &mdash; check the explorer badge for the rest
   </p>
 </div>
 
@@ -59,7 +59,11 @@ import { milestones } from '../data/site';
     const toggle = (open) => {
       const el = panel();
       if (el) el.hidden = !open;
+      if (open) {
+        document.dispatchEvent(new CustomEvent('quest:request', { detail: { id: 'git-log' } }));
+      }
     };
+    window.__openCareerLog = () => toggle(true);
 
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape') return toggle(false);

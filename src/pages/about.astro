@@ -4,6 +4,7 @@ import {
   site,
   contact,
   experience,
+  experienceTracks,
   education,
   certifications,
   skillGroups,
@@ -24,7 +25,7 @@ const projectBySlug = new Map(projects.map((project) => [project.slug, project])
 
 <BaseLayout
   title={`About ${site.name} - product lead and engineer in Dhaka`}
-  description="SM Saimul Islam is a product lead and full-stack engineer in Dhaka: Head of Product at Upturn, Tech Lead at StuDays, IELTS instructor at Mentors, and a BBA candidate at IBA, University of Dhaka."
+  description="SM Saimul Islam is a product lead and full-stack engineer in Dhaka: Project Associate at Invest Bangladesh (BanglaBiz), former Head of Product at Upturn, Tech Lead at StuDays, IELTS instructor at Mentors (Band 8), and a BBA candidate at IBA, University of Dhaka."
   graph={graph}
   ogType="profile"
 >
@@ -46,16 +47,23 @@ const projectBySlug = new Map(projects.map((project) => [project.slug, project])
         App Store and Google Play.
       </p>
       <p>
+        Since October 2026 I have been a Project Associate at Invest Bangladesh, working part-time
+        on BanglaBiz - the government's business starter and management platform. It is deployed
+        but not yet in use, which makes the job a mix of everything: UI/UX analysis, facilitating
+        integrations, user research, sitting on the hiring team, and finding the policy gaps that
+        would stop a real business owner from getting value out of it.
+      </p>
+      <p>
         My background is deliberately double-sided. I am a BBA candidate at the Institute of
         Business Administration, University of Dhaka, and I have written production Flutter and
         Next.js for over five years. That means I can size a feature against its business case in
         the morning and ship it in the afternoon, without a translation layer in between.
       </p>
       <p>
-        Three years of teaching IELTS at Mentors is the other half of the story. Standing in front
-        of a room full of anxious students every week is the best training there is for explaining
-        a hard technical tradeoff to people who do not write code - founders, clients, and boards
-        included.
+        Three years of teaching IELTS at Mentors - on the back of my own Band 8 - is the other half
+        of the story. Standing in front of a room full of anxious students every week is the best
+        training there is for explaining a hard technical tradeoff to people who do not write code
+        - founders, clients, and boards included.
       </p>
       <p>
         I work across the whole lifecycle: architecture, build, release, and the production support
@@ -65,23 +73,49 @@ const projectBySlug = new Map(projects.map((project) => [project.slug, project])
     </div>
   </section>
 
-  <section aria-labelledby="timeline-heading" class="container-page py-16 sm:py-20">
-    <h2 id="timeline-heading" class="text-2xl font-semibold tracking-tight sm:text-3xl">
-      Where I have worked
-    </h2>
+  <section
+    aria-labelledby="timeline-heading"
+    class="container-page py-16 sm:py-20"
+    data-quest-view="timeline"
+  >
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <h2 id="timeline-heading" class="text-2xl font-semibold tracking-tight sm:text-3xl">
+        Where I have worked
+      </h2>
+      <ul class="flex flex-wrap gap-x-4 gap-y-1 font-mono text-[0.68rem] uppercase tracking-[0.14em] text-muted" aria-label="Timeline legend">
+        {
+          Object.values(experienceTracks).map((track) => (
+            <li class="flex items-center gap-1.5">
+              <span class="size-2 rounded-full" style={`background: ${track.color}`} aria-hidden="true" />
+              {track.label}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+    <p class="mt-3 max-w-xl text-sm text-muted">
+      Several of these overlap - the teaching and the degree run alongside the product work.
+    </p>
 
     <ol class="mt-10 space-y-0">
       {
         experience.map((entry) => {
           const related = entry.project ? projectBySlug.get(entry.project) : undefined;
+          const track = experienceTracks[entry.track];
           return (
-            <li class="relative border-l border-line py-6 pl-8 last:pb-0">
+            <li class="reveal relative border-l border-line py-6 pl-8 last:pb-0">
               <span
-                class="absolute -left-[0.3125rem] top-8 size-2.5 rounded-full border-2 border-bg bg-accent"
+                class="absolute -left-[0.3125rem] top-8 size-2.5 rounded-full border-2 border-bg"
+                style={`background: ${track.color}`}
                 aria-hidden="true"
               />
-              <p class="font-mono text-xs text-muted">
-                {entry.start} &ndash; {entry.end}
+              <p class="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs text-muted">
+                <span>
+                  {entry.start} &ndash; {entry.end}
+                </span>
+                <span class="uppercase tracking-[0.14em]" style={`color: ${track.color}`}>
+                  {track.label}
+                </span>
               </p>
               <h3 class="mt-2 text-lg font-medium">
                 {entry.role} &middot; <span class="text-accent">{entry.org}</span>
@@ -130,7 +164,10 @@ const projectBySlug = new Map(projects.map((project) => [project.slug, project])
         <ul class="mt-4 space-y-3">
           {
             certifications.map((cert) => (
-              <li class="text-sm text-fg-soft">{cert.name}</li>
+              <li class="text-sm text-fg-soft">
+                <span class:list={[cert.highlight && 'font-medium text-fg']}>{cert.name}</span>
+                {cert.detail && <span class="mt-0.5 block text-xs text-muted">{cert.detail}</span>}
+              </li>
             ))
           }
         </ul>
@@ -140,7 +177,7 @@ const projectBySlug = new Map(projects.map((project) => [project.slug, project])
 
   <section aria-labelledby="skills-heading" class="container-page py-16">
     <h2 id="skills-heading" class="text-2xl font-semibold tracking-tight sm:text-3xl">Toolkit</h2>
-    <div class="mt-10 grid gap-8 sm:grid-cols-3">
+    <div class="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
       {
         skillGroups.map((group) => (
           <div>
@@ -159,6 +196,7 @@ const projectBySlug = new Map(projects.map((project) => [project.slug, project])
       Want the short version in your inbox instead?{' '}
       <a
         href={`mailto:${contact.email}`}
+        data-quest="ready-to-talk"
         class="text-accent underline decoration-accent/40 underline-offset-4 hover:decoration-accent"
         >Email me</a
       >.

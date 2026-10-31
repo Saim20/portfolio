@@ -33,6 +33,7 @@
       if (!button) return;
       const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
       document.documentElement.dataset.theme = next;
+      document.dispatchEvent(new CustomEvent('quest:request', { detail: { id: 'night-shift' } }));
       try {
         localStorage.setItem('theme', next);
       } catch {

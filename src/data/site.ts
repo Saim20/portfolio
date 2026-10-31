@@ -12,7 +12,7 @@ export const site = {
   role: 'Product Lead & Full-stack Engineer',
   tagline: 'I design, build, and ship software products end to end.',
   description:
-    'Product lead and full-stack engineer in Dhaka, Bangladesh. 5+ years shipping Flutter apps and Next.js platforms - from architecture and release to production support. Available for product, web, and mobile work.',
+    'Product lead and full-stack engineer in Dhaka, Bangladesh. 5+ years shipping Flutter apps and Next.js platforms - from architecture and release to production support. Currently Project Associate at Invest Bangladesh (BanglaBiz), IELTS instructor at Mentors (Band 8), and a BBA candidate at IBA. Available for product, web, and mobile work.',
   location: {
     city: 'Dhaka',
     country: 'Bangladesh',
@@ -74,7 +74,20 @@ export const skillGroups = [
     label: 'Data & Infra',
     items: ['PostgreSQL', 'SQL & data analysis', 'Linux system administration', 'Vercel'],
   },
+  {
+    label: 'Product & Research',
+    items: ['UI/UX analysis', 'User research', 'Policy analysis', 'Hiring & team building'],
+  },
 ] as const;
+
+/** Which lane of the timeline an entry belongs to; several run in parallel. */
+export type ExperienceTrack = 'work' | 'teaching' | 'study';
+
+export const experienceTracks: Record<ExperienceTrack, { label: string; color: string }> = {
+  work: { label: 'Work', color: 'var(--color-accent)' },
+  teaching: { label: 'Teaching', color: 'var(--color-warm)' },
+  study: { label: 'Study', color: 'var(--color-fg-soft)' },
+};
 
 export type ExperienceEntry = {
   org: string;
@@ -83,17 +96,29 @@ export type ExperienceEntry = {
   end: string;
   location: string;
   summary: string;
+  track: ExperienceTrack;
   /** Slug of a related project, used to cross-link the timeline to the work. */
   project?: string;
 };
 
 export const experience: ExperienceEntry[] = [
   {
+    org: 'Invest Bangladesh',
+    role: 'Project Associate (part-time)',
+    start: 'Oct 2026',
+    end: 'Present',
+    location: 'Dhaka, Bangladesh',
+    track: 'work',
+    summary:
+      "Part of the team managing the development of BanglaBiz, the government's business starter and management platform - deployed, now being readied for adoption. UI/UX analysis and improvement, integrations facilitation, user research, hiring, and finding policy gaps and proposing fixes.",
+  },
+  {
     org: 'Upturn',
     role: 'Head of Product',
     start: 'Nov 2023',
     end: 'Mar 2026',
     location: 'Dhaka, Bangladesh',
+    track: 'work',
     summary:
       'Led product for Flow, a business management SaaS, owning both the technical direction and the commercial case for what got built.',
     project: 'flow-upturn',
@@ -104,6 +129,7 @@ export const experience: ExperienceEntry[] = [
     start: 'Mar 2024',
     end: 'Jul 2025',
     location: 'Dhaka, Bangladesh',
+    track: 'work',
     summary:
       'Built and shipped the StuDays mobile app, which lets students in Bangladesh verify their status and claim offers from vendors nationwide.',
     project: 'studays',
@@ -114,6 +140,7 @@ export const experience: ExperienceEntry[] = [
     start: 'Jun 2024',
     end: 'Oct 2024',
     location: 'Dhaka, Bangladesh',
+    track: 'work',
     summary: 'Built and deployed a ticketing service and maintained its backend.',
     project: 'ki-chole',
   },
@@ -123,8 +150,19 @@ export const experience: ExperienceEntry[] = [
     start: 'Aug 2023',
     end: 'Present',
     location: 'Kalabagan, Dhaka, Bangladesh',
+    track: 'teaching',
     summary:
-      'Three years of teaching test strategy and language skills - the reason I can explain a technical decision to a room that does not write code.',
+      'Three years of teaching test strategy and language skills on the back of my own Band 8 - the reason I can explain a technical decision to a room that does not write code.',
+  },
+  {
+    org: 'IBA, University of Dhaka',
+    role: 'BBA candidate',
+    start: 'Jul 2023',
+    end: 'Jul 2027',
+    location: 'Dhaka, Bangladesh',
+    track: 'study',
+    summary:
+      'Business degree in parallel with everything above. Strategy, finance, and marketing coursework applied directly to products I was already shipping.',
   },
 ];
 
@@ -137,16 +175,33 @@ export const education = [
   },
 ] as const;
 
-export const certifications = [
+export type Certification = {
+  name: string;
+  detail?: string;
+  /** Highlighted credentials surface in the home proof strip. */
+  highlight?: boolean;
+};
+
+export const certifications: Certification[] = [
+  { name: 'IELTS Band 8', detail: 'Overall band score, academic module', highlight: true },
   { name: 'Associate Data Analyst in SQL' },
   { name: 'International Blockchain Olympiad' },
+];
+
+/** What is happening right now, for the home "Now" card. */
+export const now = [
+  { label: 'Building', text: 'BanglaBiz with Invest Bangladesh', href: '/about' },
+  { label: 'Teaching', text: "IELTS at Mentors'", href: '/about' },
+  { label: 'Studying', text: 'BBA at IBA, University of Dhaka', href: '/about' },
+  { label: 'Taking on', text: 'product, web, and mobile work', href: '/contact' },
 ] as const;
 
 /**
  * Career milestones, newest first. Rendered as a fake `git log` in the easter egg.
- * Dates for the launch and "first Flutter" entries are approximate - adjust to taste.
+ * Dates for the launch, IELTS, and "first Flutter" entries are approximate - adjust to taste.
  */
 export const milestones = [
+  { hash: 'f3a9d12', date: '2026-10', text: 'join: Project Associate at Invest Bangladesh (BanglaBiz)' },
   { hash: 'a91f2c7', date: '2026-03', text: 'wrap up: 2.5 years leading product at Upturn' },
   { hash: '5d3e0b4', date: '2025-07', text: 'ship: StuDays live on App Store and Play Store' },
   { hash: 'c07a8e1', date: '2024-11', text: 'launch: tathirmichil.com admissions platform' },
@@ -154,5 +209,7 @@ export const milestones = [
   { hash: 'e42c1a8', date: '2023-11', text: 'start: Head of Product at Upturn' },
   { hash: '9f81d30', date: '2023-08', text: 'teach: first IELTS batch at Mentors' },
   { hash: '0c5b7ae', date: '2023-07', text: 'enroll: BBA at IBA, University of Dhaka' },
+  // TODO: confirm the IELTS test date.
+  { hash: '7d2e9c3', date: '2023-05', text: 'score: IELTS overall Band 8' },
   { hash: '1a2f4d6', date: '2020-01', text: 'init: first line of production Flutter' },
 ] as const;

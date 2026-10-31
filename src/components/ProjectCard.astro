@@ -65,3 +65,35 @@ const caseStudy = `/work/${project.slug}`;
     </div>
   </div>
 </article>
+
+<script>
+  /**
+   * Pointer-tracked tilt for the poster frame. One delegated listener for every
+   * card on the page; skipped entirely on touch devices and under reduced motion.
+   */
+  const fine = window.matchMedia('(hover: hover) and (pointer: fine)');
+  const motion = window.matchMedia('(prefers-reduced-motion: no-preference)');
+
+  if (fine.matches && motion.matches && !(window as Window & { __tilt?: boolean }).__tilt) {
+    (window as Window & { __tilt?: boolean }).__tilt = true;
+
+    document.addEventListener('pointermove', (event) => {
+      const card = (event.target as Element | null)?.closest<HTMLElement>('.project-card');
+      if (!card) return;
+      const rect = card.getBoundingClientRect();
+      const x = (event.clientX - rect.left) / rect.width - 0.5;
+      const y = (event.clientY - rect.top) / rect.height - 0.5;
+      card.style.setProperty('--tilt-x', `${(-y * 6).toFixed(2)}deg`);
+      card.style.setProperty('--tilt-y', `${(x * 8).toFixed(2)}deg`);
+      card.style.setProperty('--glare-x', `${((x + 0.5) * 100).toFixed(1)}%`);
+      card.style.setProperty('--glare-y', `${((y + 0.5) * 100).toFixed(1)}%`);
+    });
+
+    document.addEventListener('pointerout', (event) => {
+      const card = (event.target as Element | null)?.closest<HTMLElement>('.project-card');
+      if (!card || card.contains(event.relatedTarget as Node | null)) return;
+      card.style.removeProperty('--tilt-x');
+      card.style.removeProperty('--tilt-y');
+    });
+  }
+</script>
