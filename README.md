@@ -1,12 +1,12 @@
-# SM Saimul Islam — Portfolio
+# SM Saimul Islam - Portfolio
 
 A static, SEO-complete personal site for product and engineering work.
 Built with [Astro](https://astro.build) so every page ships as HTML with almost no JavaScript.
 
 ## Stack
 
-- **Astro 7** — prerendered pages, islands only where interaction is needed
-- **Tailwind CSS 4** — utility styles, inlined at build time
+- **Astro 7** - prerendered pages, islands only where interaction is needed
+- **Tailwind CSS 4** - utility styles, inlined at build time
 - **Self-hosted fonts** via Astro Fonts (Inter + JetBrains Mono)
 - **Vercel** adapter for deploy and cache headers
 

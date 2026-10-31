@@ -1,7 +1,7 @@
 /**
  * Featured work. Order here is the order shown on the site.
  *
- * Stack chips are the honest short version — worth a read-through before launch so
+ * Stack chips are the honest short version - worth a read-through before launch so
  * every chip is something you would defend in a client call.
  */
 
@@ -50,7 +50,7 @@ export const projects: Project[] = [
       'An admissions prep platform where students sit timed mock tests and see exactly where they stand.',
     category: 'Web platform',
     role: 'Architect & Full-stack Engineer',
-    period: '2024 — present',
+    period: '2024 - present',
     live: true,
     featured: true,
     accent: '#5eead4',
@@ -59,10 +59,10 @@ export const projects: Project[] = [
       { label: 'Visit tathirmichil.com', href: 'https://www.tathirmichil.com', primary: true },
     ],
     problem:
-      'IBA admission candidates were stitching together SAT, GRE, and GMAT books, scattered PDFs, and group chats. The instructor behind Michil — Tathir Mohtadi Chowdhury, Rank 1 of the 31st batch — needed one place to run a whole preparation season: teach, test, rank, and keep a full batch of students motivated at the same time.',
+      'IBA admission candidates were stitching together SAT, GRE, and GMAT books, scattered PDFs, and group chats. The instructor behind Michil - Tathir Mohtadi Chowdhury, Rank 1 of the 31st batch - needed one place to run a whole preparation season: teach, test, rank, and keep a full batch of students motivated at the same time.',
     approach: [
       'Built a full assessment engine: timed 90-minute mock tests modelled on real question papers, with per-section and per-topic scoring.',
-      'Turned raw attempts into analytics students act on — accuracy, time management, strengths and weaknesses, and a median comparison against everyone else who sat the same test.',
+      'Turned raw attempts into analytics students act on - accuracy, time management, strengths and weaknesses, and a median comparison against everyone else who sat the same test.',
       'Added a coin and leaderboard economy so daily practice feels like a game instead of homework, which is what students quote most in their testimonials.',
       'Shipped an admin surface for the instructor: authoring questions, publishing tests and results, running batches, and posting announcements without a developer in the loop.',
       'Moved heavy result publishing and challenge scoring into a background worker so the app stays responsive when an entire batch submits at once.',
@@ -79,10 +79,10 @@ export const projects: Project[] = [
     slug: 'flow-upturn',
     name: 'Flow',
     tagline:
-      'Operations, HR, and accounting for growing companies — in one system instead of five spreadsheets.',
+      'Operations, HR, and accounting for growing companies - in one system instead of five spreadsheets.',
     category: 'SaaS',
     role: 'Head of Product',
-    period: 'Nov 2023 — Mar 2026',
+    period: 'Nov 2023 - Mar 2026',
     live: true,
     featured: true,
     accent: '#60a5fa',
@@ -94,11 +94,11 @@ export const projects: Project[] = [
       'Small and mid-sized companies in Bangladesh run operations across WhatsApp, paper forms, and a pile of spreadsheets. Attendance lives in one place, payroll in another, client work in a third, and nobody trusts the numbers at month end. Flow set out to replace that whole stack for teams of 10 to 50.',
     approach: [
       'Owned the product end to end as Head of Product: what shipped, in what order, and why it was worth building.',
-      'Scoped and shipped integrated modules rather than isolated tools — task and project tracking, process automation, HRIS, attendance, leave, and payroll all reading the same employee record.',
+      'Scoped and shipped integrated modules rather than isolated tools - task and project tracking, process automation, HRIS, attendance, leave, and payroll all reading the same employee record.',
       'Built employee-facing services that remove admin back-and-forth: notices, requisitions, expense settlements, and complaints, each with its own approval trail.',
       'Modelled onboarding and offboarding as repeatable workflows, so a new hire or an exit is a checklist the system runs rather than something a manager remembers.',
       'Extended the platform outward with stakeholder management: custom processes per client or vendor, a public ticket submission portal, and per-stakeholder billing and transactions.',
-      'Shaped commercial packaging alongside the product — tiered plans by team size plus a per-stakeholder add-on.',
+      'Shaped commercial packaging alongside the product - tiered plans by team size plus a per-stakeholder add-on.',
     ],
     highlights: [
       { label: 'Scope', value: '17 modules across ops, HR, and finance' },
@@ -115,7 +115,7 @@ export const projects: Project[] = [
       'A student ID in your pocket that unlocks real discounts at 150+ brands across Dhaka.',
     category: 'Mobile app',
     role: 'Tech Lead',
-    period: 'Mar 2024 — Jul 2025',
+    period: 'Mar 2024 - Jul 2025',
     live: true,
     featured: true,
     accent: '#fbbf24',
@@ -126,12 +126,12 @@ export const projects: Project[] = [
       { label: 'mystudays.com', href: 'https://mystudays.com' },
     ],
     problem:
-      'Student discounts in Bangladesh existed but were invisible: a vendor would agree to a deal, and students either never heard about it or turned up without a way to prove they were students. Nexity Bangladesh wanted a single app that handles both sides — proof of student status, and a catalogue of offers worth opening the app for.',
+      'Student discounts in Bangladesh existed but were invisible: a vendor would agree to a deal, and students either never heard about it or turned up without a way to prove they were students. Nexity Bangladesh wanted a single app that handles both sides - proof of student status, and a catalogue of offers worth opening the app for.',
     approach: [
       'Led the build of a cross-platform Flutter app shipped to both the App Store and Google Play from one codebase.',
       'Implemented in-app student verification that issues a digital student ID, replacing the physical card at the counter.',
       'Built a browsable offers catalogue across food, fashion, tech, fitness, beauty, travel, groceries, telecom, books, and subscriptions.',
-      'Owned the release pipeline end to end — store review cycles, versioned rollouts, and post-launch fixes across iOS and Android.',
+      'Owned the release pipeline end to end - store review cycles, versioned rollouts, and post-launch fixes across iOS and Android.',
     ],
     highlights: [
       { label: 'Reach', value: '150+ partner brands in Dhaka' },
@@ -147,7 +147,7 @@ export const projects: Project[] = [
     tagline: 'A mobile ticketing service, built and deployed end to end in five months.',
     category: 'Mobile app',
     role: 'Mobile Application Developer',
-    period: 'Jun 2024 — Oct 2024',
+    period: 'Jun 2024 - Oct 2024',
     live: false,
     featured: false,
     accent: '#f472b6',

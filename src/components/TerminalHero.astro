@@ -10,7 +10,7 @@ import { projects } from '../data/projects';
  */
 const lines: Array<{ cmd?: string; out?: string; accent?: boolean }> = [
   { cmd: 'whoami' },
-  { out: 'SM Saimul Islam — full-stack engineer' },
+  { out: 'SM Saimul Islam - full-stack engineer' },
   { cmd: 'ls ~/shipped' },
   { out: projects.map((p) => p.slug).join('  ') },
   { cmd: 'cat stack.txt' },
@@ -30,7 +30,7 @@ const lines: Array<{ cmd?: string; out?: string; accent?: boolean }> = [
       <span class="size-2.5 rounded-full bg-[#febc2e]"></span>
       <span class="size-2.5 rounded-full bg-[#28c840]"></span>
     </span>
-    <span class="min-w-0 truncate font-mono text-[0.65rem] text-muted sm:text-xs">saim@dhaka — zsh</span>
+    <span class="min-w-0 truncate font-mono text-[0.65rem] text-muted sm:text-xs">saim@dhaka - zsh</span>
     <button
       type="button"
       data-terminal-skip

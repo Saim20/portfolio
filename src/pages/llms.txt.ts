@@ -12,7 +12,7 @@ import {
 import { projects } from '../data/projects';
 
 /**
- * https://llmstxt.org — a plain-text digest of the whole site so a model can
+ * https://llmstxt.org - a plain-text digest of the whole site so a model can
  * answer questions about Saimul without crawling and parsing every page.
  * Generated from the same data as the UI, so it can never drift.
  */
@@ -45,7 +45,7 @@ export const GET: APIRoute = () => {
 
   for (const project of projects) {
     lines.push(
-      `### ${project.name} (${project.category}) — ${url(`/work/${project.slug}`)}`,
+      `### ${project.name} (${project.category}) - ${url(`/work/${project.slug}`)}`,
       '',
       `- Role: ${project.role}`,
       `- Period: ${project.period}`,

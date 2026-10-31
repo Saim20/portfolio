@@ -8,11 +8,11 @@ export const site = {
   name: 'SM Saimul Islam',
   shortName: 'Saimul Islam',
   initials: 'SI',
-  title: 'SM Saimul Islam — Product Lead & Full-stack Engineer',
+  title: 'SM Saimul Islam - Product Lead & Full-stack Engineer',
   role: 'Product Lead & Full-stack Engineer',
   tagline: 'I design, build, and ship software products end to end.',
   description:
-    'Product lead and full-stack engineer in Dhaka, Bangladesh. 5+ years shipping Flutter apps and Next.js platforms — from architecture and release to production support. Available for product, web, and mobile work.',
+    'Product lead and full-stack engineer in Dhaka, Bangladesh. 5+ years shipping Flutter apps and Next.js platforms - from architecture and release to production support. Available for product, web, and mobile work.',
   location: {
     city: 'Dhaka',
     country: 'Bangladesh',
@@ -24,7 +24,7 @@ export const site = {
 } as const;
 
 export const contact = {
-  email: 'saim.29@outlook.com',
+  email: 'saim@rolka.dev',
   phone: '+8801798355165',
   /** Rendered on /contact only, to keep it out of every page's markup. */
   phoneDisplay: '+880 1798 355165',
@@ -40,7 +40,7 @@ export const socials: Social[] = [
 ];
 
 /**
- * What clients actually buy. Kept short on purpose — this is a pitch, not a résumé.
+ * What clients actually buy. Kept short on purpose - this is a pitch, not a résumé.
  */
 export const services = [
   {
@@ -124,7 +124,7 @@ export const experience: ExperienceEntry[] = [
     end: 'Present',
     location: 'Kalabagan, Dhaka, Bangladesh',
     summary:
-      'Three years of teaching test strategy and language skills — the reason I can explain a technical decision to a room that does not write code.',
+      'Three years of teaching test strategy and language skills - the reason I can explain a technical decision to a room that does not write code.',
   },
 ];
 
@@ -144,7 +144,7 @@ export const certifications = [
 
 /**
  * Career milestones, newest first. Rendered as a fake `git log` in the easter egg.
- * Dates for the launch and "first Flutter" entries are approximate — adjust to taste.
+ * Dates for the launch and "first Flutter" entries are approximate - adjust to taste.
  */
 export const milestones = [
   { hash: 'a91f2c7', date: '2026-03', text: 'wrap up: 2.5 years leading product at Upturn' },

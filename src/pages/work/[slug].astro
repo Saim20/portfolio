@@ -27,7 +27,7 @@ const others = projects.filter((entry) => entry.slug !== project.slug).slice(0, 
 ---
 
 <BaseLayout
-  title={`${project.name} — ${project.category} case study`}
+  title={`${project.name} - ${project.category} case study`}
   description={project.summary}
   graph={graph}
   ogType="article"
@@ -83,7 +83,7 @@ const others = projects.filter((entry) => entry.slug !== project.slug).slice(0, 
       {
         !project.live && (
           <p class="mt-6 text-sm text-muted">
-            This one is no longer publicly reachable — happy to walk through it on a call.
+            This one is no longer publicly reachable - happy to walk through it on a call.
           </p>
         )
       }

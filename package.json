@@ -3,7 +3,7 @@
   "type": "module",
   "version": "1.0.0",
   "private": true,
-  "description": "Portfolio site for SM Saimul Islam — product lead and full-stack engineer.",
+  "description": "Portfolio site for SM Saimul Islam - product lead and full-stack engineer.",
   "engines": {
     "node": ">=22.12.0"
   },
