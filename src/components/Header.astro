@@ -18,14 +18,11 @@ const isActive = (href: string) => current === href || current.startsWith(`${hre
   <div class="container-page flex h-14 items-center justify-between gap-2 sm:h-16 sm:gap-4">
     <a
       href="/"
-      class="group flex items-center gap-2.5 font-medium"
+      class="group font-medium tracking-tight text-[0.95rem] transition-colors hover:text-accent sm:text-base"
       data-logo
       aria-label={`${site.name} - home`}
     >
-      <span
-        class="grid size-9 place-items-center rounded-lg border border-line bg-surface-2 font-mono text-sm text-accent transition-colors group-hover:border-accent"
-        aria-hidden="true">{site.initials}</span>
-      <span class="hidden text-[0.95rem] sm:inline">{site.shortName}</span>
+      {site.shortName}
     </a>
 
     <nav aria-label="Primary" class="flex items-center gap-0.5 sm:gap-1">

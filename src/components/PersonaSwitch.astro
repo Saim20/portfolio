@@ -1,5 +1,12 @@
 ---
 import { personas } from '../data/personas';
+import Icon from './Icon.astro';
+
+const personaIcons: Record<string, string> = {
+  hiring: 'briefcase',
+  founder: 'rocket',
+  browsing: 'compass',
+};
 
 /**
  * "Who are you?" segmented control. The choice is stored as `html[data-persona]`
@@ -20,9 +27,9 @@ const payload = Object.fromEntries(
 );
 ---
 
-<div class="persona-switch" data-persona-switch>
-  <p id="persona-switch-label" class="text-base font-semibold tracking-tight text-fg sm:text-xl">
-    What are you here for?
+<div class="persona-switch w-full" data-persona-switch>
+  <p id="persona-switch-label" class="text-lg font-semibold tracking-tight text-fg">
+    Perspective
   </p>
   <div
     role="group"
@@ -35,8 +42,9 @@ const payload = Object.fromEntries(
           type="button"
           data-persona-option={persona.id}
           aria-pressed={persona.id === 'hiring' ? 'true' : 'false'}
-          class="min-h-14 rounded-xl border-2 border-line bg-surface px-2 py-3 text-center text-sm font-semibold leading-tight text-fg shadow-sm transition-colors hover:border-accent/70 sm:min-h-16 sm:px-4 sm:py-4 sm:text-lg"
+          class="flex min-h-16 flex-col items-center justify-center gap-1.5 rounded-xl border-2 border-line bg-surface px-2 py-3 text-center text-sm font-semibold leading-tight text-fg shadow-sm transition-colors hover:border-accent/70 sm:min-h-20 sm:text-base"
         >
+          <Icon name={personaIcons[persona.id] ?? 'compass'} class="size-5" />
           {persona.label}
         </button>
       ))

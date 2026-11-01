@@ -8,21 +8,21 @@ export type Quest = {
   id: string;
   title: string;
   hint: string;
-  /** Short mono glyph shown in the HUD list. */
+  /** Name of an icon in Icon.astro. */
   icon: string;
 };
 
 export const quests: Quest[] = [
-  { id: 'first-steps', title: 'First steps', hint: 'Scroll past the hero.', icon: '>' },
-  { id: 'persona', title: 'Know thyself', hint: 'Tell the home page who you are.', icon: '@' },
-  { id: 'terminal', title: 'Hello, shell', hint: 'The terminal on the home page takes input.', icon: '$' },
-  { id: 'hacker', title: 'Power user', hint: 'Run five different commands.', icon: '#' },
-  { id: 'case-study', title: 'Reader', hint: 'Open any case study.', icon: '*' },
-  { id: 'completionist', title: 'Completionist', hint: 'Read every case study, including the old one.', icon: '%' },
-  { id: 'night-shift', title: 'Night shift', hint: 'Change the lights.', icon: '~' },
-  { id: 'timeline', title: 'Historian', hint: 'Find where the work history lives.', icon: '|' },
-  { id: 'git-log', title: 'Archaeologist', hint: 'Up, up, down, down... or triple-click the logo.', icon: '^' },
-  { id: 'ready-to-talk', title: 'Ready to talk', hint: 'Reach for a contact link.', icon: '&' },
+  { id: 'first-steps', title: 'First steps', hint: 'Scroll past the hero.', icon: 'arrow-down' },
+  { id: 'persona', title: 'Know thyself', hint: 'Tell the home page who you are.', icon: 'users' },
+  { id: 'terminal', title: 'Hello, shell', hint: 'The terminal on the home page takes input.', icon: 'terminal' },
+  { id: 'hacker', title: 'Power user', hint: 'Run five different commands.', icon: 'zap' },
+  { id: 'case-study', title: 'Reader', hint: 'Open any case study.', icon: 'book' },
+  { id: 'completionist', title: 'Completionist', hint: 'Read every case study, including the old one.', icon: 'layers' },
+  { id: 'night-shift', title: 'Night shift', hint: 'Change the lights.', icon: 'moon' },
+  { id: 'timeline', title: 'Historian', hint: 'Find where the work history lives.', icon: 'clock' },
+  { id: 'git-log', title: 'Archaeologist', hint: 'Up, up, down, down... or triple-click the name.', icon: 'search' },
+  { id: 'ready-to-talk', title: 'Ready to talk', hint: 'Reach for a contact link.', icon: 'mail' },
 ];
 
 export const QUEST_TOTAL = quests.length;

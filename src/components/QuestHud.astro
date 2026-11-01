@@ -1,102 +1,150 @@
 ---
 import { quests, QUEST_TOTAL } from '../data/quests';
+import Icon from './Icon.astro';
 
 /**
- * Explorer mode HUD. Hidden until the first unlock so the first impression is
- * clean; after that a progress pill sits bottom-left, opens a list of
- * achievements, and a toast announces each unlock.
- *
- * Markup is server-rendered; the script only toggles attributes.
+ * Explorer card. On the home page an inline script parks it in the slot above
+ * the terminal before first paint. Scrolling past that slot docks it to the
+ * bottom-right. Every other page starts docked. Visible from 0 / 10.
  */
 const circumference = 2 * Math.PI * 9;
 ---
 
-<div data-quest-hud hidden class="pointer-events-none fixed inset-x-0 bottom-0 z-90">
-  <!-- Toast -->
+<div data-quest-hud class="contents">
   <div
     data-quest-toast
     role="status"
     aria-live="polite"
-    class="quest-toast pointer-events-none absolute bottom-20 left-1/2 w-max max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-lg border border-accent/50 bg-surface/95 px-4 py-2.5 font-mono text-xs shadow-2xl backdrop-blur-md"
+    class="quest-toast pointer-events-none fixed bottom-24 left-1/2 z-[90] w-max max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-lg border border-warm/50 bg-surface/95 px-4 py-2.5 font-mono text-xs shadow-2xl backdrop-blur-md"
   >
-    <span class="text-accent">achievement</span>
+    <span class="text-warm">found</span>
     <span class="text-muted"> / </span>
     <span class="text-fg" data-quest-toast-title></span>
   </div>
 
-  <!-- Pill -->
-  <button
-    type="button"
-    data-quest-pill
-    aria-expanded="false"
-    aria-controls="quest-panel"
-    class="quest-pill pointer-events-auto absolute bottom-4 left-4 flex items-center gap-2.5 rounded-full border border-line bg-surface/95 py-1.5 pr-3.5 pl-2 font-mono text-xs text-fg-soft shadow-xl backdrop-blur-md transition-colors hover:border-accent hover:text-fg"
-  >
-    <svg viewBox="0 0 24 24" class="size-6 -rotate-90" aria-hidden="true">
-      <circle cx="12" cy="12" r="9" fill="none" stroke="var(--color-line)" stroke-width="2.5"></circle>
-      <circle
-        data-quest-ring
-        cx="12"
-        cy="12"
-        r="9"
-        fill="none"
-        stroke="var(--color-accent)"
-        stroke-width="2.5"
-        stroke-linecap="round"
-        stroke-dasharray={circumference}
-        stroke-dashoffset={circumference}
-        class="transition-[stroke-dashoffset] duration-700 ease-out"></circle>
-    </svg>
-    <span><span data-quest-count>0</span><span class="text-muted"> / {QUEST_TOTAL} explored</span></span>
-  </button>
+  <div data-quest-anchor data-placed="dock" data-quest-total={QUEST_TOTAL} class="quest-anchor">
+    <button
+      type="button"
+      data-quest-pill
+      aria-expanded="false"
+      aria-controls="quest-panel"
+      class="quest-card"
+    >
+      <svg viewBox="0 0 24 24" class="size-9 shrink-0 -rotate-90" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" fill="none" stroke="var(--color-line)" stroke-width="2.5"></circle>
+        <circle
+          data-quest-ring
+          cx="12"
+          cy="12"
+          r="9"
+          fill="none"
+          stroke="var(--color-warm)"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-dasharray={circumference}
+          stroke-dashoffset={circumference}
+          class="transition-[stroke-dashoffset] duration-700 ease-out"></circle>
+      </svg>
+      <span class="min-w-0 text-left">
+        <span class="block text-sm font-semibold tracking-tight">Explorer</span>
+        <span data-quest-blurb class="mt-0.5 block text-sm text-fg-soft">10 things to find. Go looking.</span>
+        <span class="mt-0.5 block font-mono text-xs text-muted">
+          <span data-quest-count>0</span> / {QUEST_TOTAL} explored
+        </span>
+      </span>
+    </button>
 
-  <!-- Panel -->
-  <div
-    id="quest-panel"
-    data-quest-panel
-    hidden
-    class="pointer-events-auto absolute bottom-16 left-4 w-[min(22rem,calc(100vw-2rem))] overflow-hidden rounded-xl border border-accent/40 bg-surface/95 shadow-2xl backdrop-blur-md"
-  >
-    <div class="flex items-center gap-2 border-b border-line px-4 py-2">
-      <span class="font-mono text-xs text-accent">explorer mode</span>
-      <button
-        type="button"
-        data-quest-close
-        class="ml-auto rounded px-1 font-mono text-xs text-muted hover:text-fg"
-        aria-label="Close achievements">esc</button
-      >
-    </div>
-    <ol class="max-h-[50vh] overflow-y-auto px-2 py-2">
-      {
-        quests.map((quest) => (
-          <li
-            data-quest-item={quest.id}
-            class="quest-item flex items-start gap-3 rounded-md px-2 py-1.5 font-mono text-[0.72rem] leading-relaxed"
-          >
-            <span class="quest-icon mt-0.5 grid size-5 shrink-0 place-items-center rounded border border-line text-[0.65rem] text-muted">
-              {quest.icon}
-            </span>
-            <span class="min-w-0">
-              <span class="quest-title block text-fg-soft">{quest.title}</span>
-              <span class="quest-hint block text-muted">{quest.hint}</span>
-            </span>
-          </li>
-        ))
-      }
-    </ol>
-    <div class="flex items-center justify-between gap-3 border-t border-line px-4 py-2 font-mono text-[0.65rem] text-muted">
-      <span data-quest-footer>find them all to unlock something</span>
-      <a
-        href="/unlocked"
-        data-quest-reward
-        hidden
-        class="rounded border border-warm/60 px-2 py-0.5 text-warm transition-colors hover:bg-warm hover:text-bg"
-      >
-        open reward &rarr;
-      </a>
+    <div
+      id="quest-panel"
+      data-quest-panel
+      hidden
+      class="quest-panel overflow-hidden rounded-xl border border-warm/40 bg-surface shadow-2xl"
+    >
+      <div class="flex items-center gap-2 border-b border-line px-4 py-2">
+        <span class="font-mono text-xs text-warm">explorer mode</span>
+        <button
+          type="button"
+          data-quest-close
+          class="ml-auto rounded px-1 font-mono text-xs text-muted hover:text-fg"
+          aria-label="Close achievements">esc</button
+        >
+      </div>
+      <ol class="max-h-[50vh] overflow-y-auto px-2 py-2">
+        {
+          quests.map((quest) => (
+            <li
+              data-quest-item={quest.id}
+              class="quest-item flex items-start gap-3 rounded-md px-2 py-1.5 text-[0.8rem] leading-relaxed"
+            >
+              <span class="quest-icon mt-0.5 grid size-6 shrink-0 place-items-center rounded-md border border-line text-muted">
+                <Icon name={quest.icon} class="size-3.5" />
+              </span>
+              <span class="min-w-0">
+                <span class="quest-title block font-medium text-fg-soft">{quest.title}</span>
+                <span class="quest-hint block text-xs text-muted">{quest.hint}</span>
+              </span>
+            </li>
+          ))
+        }
+      </ol>
+      <div class="flex items-center justify-between gap-3 border-t border-line px-4 py-2 font-mono text-[0.65rem] text-muted">
+        <span data-quest-footer>{QUEST_TOTAL} things to find</span>
+        <a
+          href="/unlocked"
+          data-quest-reward
+          hidden
+          class="rounded border border-warm/60 px-2 py-0.5 text-warm transition-colors hover:bg-warm hover:text-white"
+        >
+          open reward &rarr;
+        </a>
+      </div>
     </div>
   </div>
 </div>
+
+<!-- Place the card, and repaint saved progress, before first paint. -->
+<script is:inline>
+  (() => {
+    const slot = document.querySelector('[data-quest-sentinel]');
+    const anchor = document.querySelector('[data-quest-anchor]');
+    if (!anchor) return;
+    if (slot) {
+      slot.appendChild(anchor);
+      anchor.dataset.placed = 'flow';
+    } else {
+      anchor.dataset.placed = 'dock';
+    }
+
+    // The card leaves its wrapper on the home page, and the server markup says 0.
+    // Read the saved set here so the count is right before the module script runs.
+    let ids = [];
+    try {
+      const parsed = JSON.parse(localStorage.getItem('saim.quests.v1') || '[]');
+      if (Array.isArray(parsed)) ids = parsed.filter((id) => typeof id === 'string');
+    } catch {
+      /* private mode */
+    }
+    const total = Number(anchor.dataset.questTotal) || 10;
+    const done = ids.length;
+    const count = anchor.querySelector('[data-quest-count]');
+    if (count) count.textContent = String(done);
+    const ring = anchor.querySelector('[data-quest-ring]');
+    if (ring) {
+      const length = 2 * Math.PI * 9;
+      ring.style.strokeDashoffset = String(length * (1 - (total ? done / total : 0)));
+    }
+    const blurb = anchor.querySelector('[data-quest-blurb]');
+    if (blurb) {
+      blurb.textContent =
+        done >= total ? 'All found. Open the reward.' : done === 0 ? '10 things to find. Go looking.' : 'Keep looking.';
+    }
+    if (done >= total) anchor.dataset.complete = '';
+    const have = new Set(ids);
+    for (const item of anchor.querySelectorAll('[data-quest-item]')) {
+      if (have.has(item.dataset.questItem)) item.setAttribute('data-done', '');
+    }
+  })();
+</script>
 
 <style>
   .quest-toast {
@@ -112,30 +160,84 @@ const circumference = 2 * Math.PI * 9;
     translate: -50% 0;
   }
 
-  .quest-pill {
-    animation: quest-pill-in 0.5s var(--ease-out-soft) both;
+  .quest-anchor {
+    position: relative;
+    width: 100%;
   }
 
-  @keyframes quest-pill-in {
-    from {
-      opacity: 0;
-      translate: 0 1rem;
-    }
+  .quest-anchor[data-placed='dock'] {
+    position: fixed;
+    right: max(1rem, env(safe-area-inset-right, 0px));
+    bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+    z-index: 90;
+    width: max-content;
+    max-width: calc(100vw - 2rem);
   }
 
-  [data-quest-hud][data-complete] .quest-pill {
-    border-color: color-mix(in oklab, var(--color-warm) 70%, var(--color-line));
-    color: var(--color-warm);
+  .quest-card {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 0.75rem;
+    border-radius: 1rem;
+    border: 2px solid color-mix(in oklab, var(--color-warm) 55%, var(--color-line));
+    background: var(--color-surface);
+    padding: 0.85rem 1rem;
+    text-align: left;
+    box-shadow: 0 12px 30px -18px color-mix(in oklab, var(--color-warm) 70%, transparent);
+    transition:
+      border-color 0.2s var(--ease-out-soft),
+      box-shadow 0.2s var(--ease-out-soft);
   }
 
-  [data-quest-hud][data-complete] [data-quest-ring] {
+  .quest-card:hover {
+    border-color: var(--color-warm);
+  }
+
+  [data-placed='dock'] .quest-card {
+    width: auto;
+    border-radius: 999px;
+    padding: 0.3rem 0.9rem 0.3rem 0.35rem;
+    box-shadow: 0 10px 24px -12px rgb(0 0 0 / 0.35);
+  }
+
+  [data-placed='dock'] [data-quest-blurb] {
+    display: none;
+  }
+
+  [data-placed='dock'] .quest-card svg {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+
+  .quest-panel {
+    position: absolute;
+    z-index: 30;
+    top: calc(100% + 0.5rem);
+    left: 0;
+    right: 0;
+  }
+
+  [data-placed='dock'] .quest-panel {
+    top: auto;
+    bottom: calc(100% + 0.5rem);
+    left: auto;
+    right: 0;
+    width: min(22rem, calc(100vw - 2rem));
+  }
+
+  [data-quest-anchor][data-complete] .quest-card {
+    border-color: var(--color-warm);
+  }
+
+  [data-quest-anchor][data-complete] [data-quest-ring] {
     stroke: var(--color-warm);
   }
 
   .quest-item[data-done] .quest-icon {
-    border-color: var(--color-accent);
-    background: color-mix(in oklab, var(--color-accent) 18%, transparent);
-    color: var(--color-accent);
+    border-color: var(--color-warm);
+    background: color-mix(in oklab, var(--color-warm) 14%, transparent);
+    color: var(--color-warm);
   }
 
   .quest-item[data-done] .quest-title {
@@ -147,45 +249,55 @@ const circumference = 2 * Math.PI * 9;
   }
 
   .quest-item[data-fresh] {
-    background: color-mix(in oklab, var(--color-accent) 10%, transparent);
+    background: color-mix(in oklab, var(--color-warm) 10%, transparent);
   }
 </style>
 
 <script>
-  import { has, progress, unlocked } from '../scripts/quests';
+  import { has, progress } from '../scripts/quests';
 
   const CIRCUMFERENCE = 2 * Math.PI * 9;
   let toastTimer: number | undefined;
+  let observer: IntersectionObserver | null = null;
 
   const hud = () => document.querySelector<HTMLElement>('[data-quest-hud]');
+  const anchor = () => document.querySelector<HTMLElement>('[data-quest-anchor]');
 
   function render(freshId?: string) {
-    const root = hud();
-    if (!root) return;
+    const el = anchor();
+    if (!el) return;
     const { done, total } = progress();
 
-    if (done > 0) root.hidden = false;
-    root.toggleAttribute('data-complete', done >= total);
+    el.toggleAttribute('data-complete', done >= total);
 
-    const count = root.querySelector('[data-quest-count]');
+    // Query the card itself. On the home page it lives in the column slot, outside the hud wrapper.
+    const count = el.querySelector('[data-quest-count]');
     if (count) count.textContent = String(done);
 
-    const ring = root.querySelector<SVGCircleElement>('[data-quest-ring]');
+    const blurb = el.querySelector('[data-quest-blurb]');
+    if (blurb) {
+      blurb.textContent =
+        done >= total ? 'All found. Open the reward.' : done === 0 ? '10 things to find. Go looking.' : 'Keep looking.';
+    }
+
+    const ring = el.querySelector<SVGCircleElement>('[data-quest-ring]');
     if (ring) ring.style.strokeDashoffset = String(CIRCUMFERENCE * (1 - done / total));
 
-    for (const item of root.querySelectorAll<HTMLElement>('[data-quest-item]')) {
+    for (const item of el.querySelectorAll<HTMLElement>('[data-quest-item]')) {
       const id = item.dataset.questItem!;
       item.toggleAttribute('data-done', has(id));
       item.toggleAttribute('data-fresh', id === freshId);
     }
 
-    const footer = root.querySelector('[data-quest-footer]');
-    const reward = root.querySelector<HTMLElement>('[data-quest-reward]');
+    const footer = el.querySelector('[data-quest-footer]');
+    const reward = el.querySelector<HTMLElement>('[data-quest-reward]');
     if (footer && reward) {
       const complete = done >= total;
       footer.textContent = complete
         ? 'all found. you have earned this.'
-        : `${total - done} left to unlock something`;
+        : done === 0
+          ? `${total} things to find`
+          : `${total - done} left to unlock something`;
       reward.hidden = !complete;
     }
   }
@@ -202,13 +314,102 @@ const circumference = 2 * Math.PI * 9;
   }
 
   function setOpen(open: boolean) {
-    const root = hud();
-    const panel = root?.querySelector<HTMLElement>('[data-quest-panel]');
-    const pill = root?.querySelector<HTMLElement>('[data-quest-pill]');
+    const panel = anchor()?.querySelector<HTMLElement>('[data-quest-panel]');
+    const pill = anchor()?.querySelector<HTMLElement>('[data-quest-pill]');
     if (!panel || !pill) return;
     panel.hidden = !open;
     pill.setAttribute('aria-expanded', String(open));
     if (open) render();
+  }
+
+  /** Move the card without it crossing the page: paint it where it was, then ease to the new box. */
+  function flip(mutate: () => void, from?: DOMRect | null) {
+    const el = anchor();
+    if (!el) return;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const first = from && from.width > 0 ? from : el.getBoundingClientRect();
+    mutate();
+    if (reduce || first.width === 0) return;
+    const last = el.getBoundingClientRect();
+    const dx = first.left - last.left;
+    const dy = first.top - last.top;
+    const sx = last.width ? first.width / last.width : 1;
+    const sy = last.height ? first.height / last.height : 1;
+    if (Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
+    el.style.transformOrigin = 'top left';
+    el.style.transition = 'none';
+    el.style.transform = `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`;
+    requestAnimationFrame(() => {
+      el.style.transition = 'transform 0.5s var(--ease-out-soft)';
+      el.style.transform = 'none';
+      const done = () => {
+        el.style.transition = '';
+        el.style.transform = '';
+        el.removeEventListener('transitionend', done);
+      };
+      el.addEventListener('transitionend', done);
+    });
+  }
+
+  function dock(from?: DOMRect | null) {
+    const el = anchor();
+    const sentinel = document.querySelector<HTMLElement>('[data-quest-sentinel]');
+    const root = hud();
+    if (!el || !sentinel || !root || el.dataset.placed === 'dock') return;
+    setOpen(false);
+    sentinel.style.minHeight = `${el.offsetHeight}px`;
+    flip(() => {
+      root.append(el);
+      el.dataset.placed = 'dock';
+    }, from);
+  }
+
+  function undock() {
+    const el = anchor();
+    const sentinel = document.querySelector<HTMLElement>('[data-quest-sentinel]');
+    if (!el || !sentinel || el.dataset.placed !== 'dock') return;
+    setOpen(false);
+    flip(() => {
+      sentinel.append(el);
+      sentinel.style.minHeight = '';
+      el.dataset.placed = 'flow';
+    });
+  }
+
+  function mountPlacement() {
+    observer?.disconnect();
+    observer = null;
+    const el = anchor();
+    const root = hud();
+    const sentinel = document.querySelector<HTMLElement>('[data-quest-sentinel]');
+    if (!el || !root) return;
+    setOpen(false);
+
+    if (!sentinel) {
+      el.dataset.placed = 'dock';
+      root.append(el);
+      return;
+    }
+
+    if (el.parentElement !== sentinel) sentinel.append(el);
+    sentinel.style.minHeight = '';
+    el.dataset.placed = 'flow';
+
+    observer = new IntersectionObserver(
+      ([entry]) => {
+        const rect = entry.boundingClientRect;
+        const above = !entry.isIntersecting && rect.bottom <= 0;
+        if (above) {
+          // Start the move from the top edge, where the card was last on screen.
+          const shift = -rect.bottom;
+          dock(new DOMRect(rect.x, rect.y + shift, rect.width, rect.height));
+        } else if (anchor()?.dataset.placed === 'dock') {
+          undock();
+        }
+      },
+      { threshold: 0 },
+    );
+    observer.observe(sentinel);
   }
 
   document.addEventListener('quest:unlock', (event) => {
@@ -216,16 +417,12 @@ const circumference = 2 * Math.PI * 9;
     toast(event.detail.done >= event.detail.total ? `${event.detail.title} - all found` : event.detail.title);
   });
 
-  document.addEventListener('quest:reset', () => {
-    const root = hud();
-    if (root) root.hidden = true;
-    render();
-  });
+  document.addEventListener('quest:reset', () => render());
 
   document.addEventListener('click', (event) => {
     const target = event.target as Element | null;
     if (target?.closest('[data-quest-pill]')) {
-      const panel = hud()?.querySelector<HTMLElement>('[data-quest-panel]');
+      const panel = anchor()?.querySelector<HTMLElement>('[data-quest-panel]');
       setOpen(Boolean(panel?.hidden));
       return;
     }
@@ -237,6 +434,28 @@ const circumference = 2 * Math.PI * 9;
     if (event.key === 'Escape') setOpen(false);
   });
 
-  document.addEventListener('astro:page-load', () => render());
-  if (document.readyState !== 'loading' && unlocked().length > 0) render();
+  /** Park the card before the next paint so a navigation does not flash it in the wrong corner. */
+  function placeNow() {
+    const el = anchor();
+    const root = hud();
+    const sentinel = document.querySelector<HTMLElement>('[data-quest-sentinel]');
+    if (!el || !root) return;
+    if (sentinel) {
+      if (el.parentElement !== sentinel) sentinel.append(el);
+      el.dataset.placed = 'flow';
+    } else {
+      if (el.parentElement !== root) root.append(el);
+      el.dataset.placed = 'dock';
+    }
+    render();
+  }
+
+  function boot() {
+    render();
+    mountPlacement();
+  }
+
+  document.addEventListener('astro:after-swap', placeNow);
+  document.addEventListener('astro:page-load', boot);
+  if (document.readyState !== 'loading') boot();
 </script>

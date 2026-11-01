@@ -1,14 +1,35 @@
 @import "tailwindcss";
 
 /*
-  Dark is the default palette. The inline script in ThemeScript.astro always sets
-  data-theme on <html> before first paint (from storage, else system preference),
-  so light only ever needs one override block.
+  Light is the designed default. Dark is an override for a stored choice.
+  ThemeScript sets data-theme before first paint, so this never flashes.
 */
 @theme {
   --font-sans: var(--font-inter), system-ui, sans-serif;
   --font-mono: var(--font-jbmono), ui-monospace, monospace;
 
+  --color-bg: #f4f7fb;
+  --color-surface: #ffffff;
+  --color-surface-2: #e7eef6;
+  --color-line: #d5deea;
+  --color-fg: #12181f;
+  --color-fg-soft: #334155;
+  --color-muted: #5c6b7a;
+  --color-accent: #0f766e;
+  --color-accent-soft: #d5f5ef;
+  --color-accent-fg: #ffffff;
+  --color-warm: #b45309;
+  --color-error: #b91c1c;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:root {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
   --color-bg: #0a0e13;
   --color-surface: #11171f;
   --color-surface-2: #161e28;
@@ -21,31 +42,6 @@
   --color-accent-fg: #04211d;
   --color-warm: #fbbf24;
   --color-error: #f87171;
-
-  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-:root[data-theme="light"] {
-  --color-bg: #f7f9fc;
-  --color-surface: #ffffff;
-  --color-surface-2: #eef2f7;
-  --color-line: #dde4ec;
-  --color-fg: #0d1520;
-  --color-fg-soft: #33445a;
-  --color-muted: #5b6b7d;
-  --color-accent: #0d7d6d;
-  --color-accent-soft: #d3f5ee;
-  --color-accent-fg: #ffffff;
-  --color-warm: #a35d05;
-  --color-error: #b91c1c;
-}
-
-:root[data-theme="light"] {
-  color-scheme: light;
-}
-
-:root[data-theme="dark"] {
-  color-scheme: dark;
 }
 
 html {
@@ -141,6 +137,24 @@ html[data-persona="browsing"] [data-home-sections] > #stack {
     opacity: 1;
     translate: 0 0;
   }
+}
+
+/* Points at the terminal. Reduced motion zeroes every animation above. */
+.keyboard-cue-arrow {
+  animation: cue-bob 1.4s ease-in-out infinite;
+}
+
+@keyframes cue-bob {
+  50% {
+    translate: 0 0.4rem;
+  }
+}
+
+/* Tinted band for the terminal column and the proof strip. */
+@utility band {
+  background-color: color-mix(in oklab, var(--color-accent) 7%, var(--color-surface));
+  border: 1px solid var(--color-line);
+  border-radius: 1rem;
 }
 
 /* Subtle top-of-page glow; purely decorative, costs nothing to paint. */

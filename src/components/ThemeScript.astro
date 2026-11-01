@@ -1,22 +1,19 @@
 ---
 /**
  * Runs synchronously in <head> so data-theme is set before first paint.
- * With no stored choice we follow the OS, which keeps the CSS to a single
- * light override block instead of duplicating it under a media query.
+ * Light is the default. A stored choice wins; the OS preference does not.
  */
 ---
 
 <script is:inline>
   (() => {
     const apply = () => {
-      let theme = null;
+      let theme = 'light';
       try {
-        theme = localStorage.getItem('theme');
+        const stored = localStorage.getItem('theme');
+        if (stored === 'light' || stored === 'dark') theme = stored;
       } catch {
-        /* private mode: fall through to the system preference */
-      }
-      if (theme !== 'light' && theme !== 'dark') {
-        theme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        /* private mode: stay on the light default */
       }
       document.documentElement.dataset.theme = theme;
 

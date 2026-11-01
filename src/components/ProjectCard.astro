@@ -23,7 +23,7 @@ const caseStudy = `/work/${project.slug}`;
       <span>{project.role}</span>
     </div>
 
-    <h3 class="text-xl font-semibold tracking-tight">
+    <h3 class="text-2xl font-semibold tracking-tight">
       <a
         href={caseStudy}
         class="transition-colors group-hover:text-accent focus-visible:text-accent"
@@ -34,7 +34,7 @@ const caseStudy = `/work/${project.slug}`;
       </a>
     </h3>
 
-    <p class="text-fg-soft">{project.tagline}</p>
+    <p class="text-sm text-muted">{project.tagline}</p>
 
     <ul class="flex flex-wrap gap-1.5" aria-label={`${project.name} stack`}>
       {

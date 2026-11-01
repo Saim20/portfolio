@@ -2,6 +2,7 @@
 import { personas } from '../data/personas';
 import { certifications, education } from '../data/site';
 import { projects } from '../data/projects';
+import Icon from './Icon.astro';
 
 /**
  * The five facts a visitor needs before they scroll. Personas promote some chips
@@ -11,11 +12,13 @@ const live = projects.filter((project) => project.live).length;
 const highlighted = certifications.find((cert) => cert.highlight);
 
 const chips = [
-  { id: 'years', value: '5+', label: 'years shipping production software' },
-  { id: 'live', value: String(live), label: 'products live for real users' },
-  { id: 'rating', value: '4.3 / 5', label: 'StuDays on the App Store' },
-  ...(highlighted ? [{ id: 'ielts', value: highlighted.name.replace('IELTS ', ''), label: 'IELTS' }] : []),
-  { id: 'iba', value: 'IBA', label: `${education[0].credential.split(',')[0]}, University of Dhaka` },
+  { id: 'years', icon: 'clock', value: '5+', label: 'years shipping production software' },
+  { id: 'live', icon: 'box', value: String(live), label: 'products live for real users' },
+  { id: 'rating', icon: 'star', value: '4.3 / 5', label: 'StuDays on the App Store' },
+  ...(highlighted
+    ? [{ id: 'ielts', icon: 'award', value: highlighted.name.replace('IELTS ', ''), label: 'IELTS' }]
+    : []),
+  { id: 'iba', icon: 'school', value: 'IBA', label: `${education[0].credential.split(',')[0]}, University of Dhaka` },
 ];
 
 // e.g. html[data-persona="hiring"] [data-proof="ielts"] { order: -3 }
@@ -35,10 +38,11 @@ const orderCss = personas
       <div data-proof={chip.id} class="proof-chip">
         <dt class="sr-only">{chip.label}</dt>
         <dd>
-          <span class="block text-2xl font-semibold tracking-tight text-accent sm:text-3xl">
-            {chip.value}
+          <span class="flex items-center gap-2.5">
+            <Icon name={chip.icon} class="size-5 shrink-0 text-accent" />
+            <span class="text-2xl font-semibold leading-none tracking-tight text-accent">{chip.value}</span>
           </span>
-          <span class="mt-1 block text-xs text-muted sm:text-sm">{chip.label}</span>
+          <span class="mt-2 block pl-8 text-sm leading-snug text-muted">{chip.label}</span>
         </dd>
       </div>
     ))
@@ -50,26 +54,28 @@ const orderCss = personas
 <style>
   .proof-strip {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.5rem 1rem;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
   }
 
   @media (width >= 40rem) {
     .proof-strip {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (width >= 64rem) {
+    .proof-strip {
       grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 0.85rem;
     }
   }
 
   .proof-chip {
-    transition: transform 0.4s var(--ease-out-soft);
-  }
-
-  /* Promoted chips get a small lift so the reorder reads as intentional. */
-  :global(html[data-persona='hiring']) [data-proof='ielts'],
-  :global(html[data-persona='hiring']) [data-proof='years'],
-  :global(html[data-persona='founder']) [data-proof='live'],
-  :global(html[data-persona='founder']) [data-proof='rating'],
-  :global(html[data-persona='browsing']) [data-proof='live'] {
-    transform: translateY(-0.15rem);
+    height: 100%;
+    border: 1px solid var(--color-line);
+    border-radius: 0.9rem;
+    background: var(--color-surface);
+    padding: 0.95rem 1rem 1rem;
   }
 </style>
