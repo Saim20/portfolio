@@ -73,7 +73,7 @@ const payload = {
           <span class="terminal-line" data-line>
             {line.cmd ? (
               <>
-                <span class="select-none text-accent" aria-hidden="true">$ </span>
+                <span class="select-none text-accent" data-prompt aria-hidden="true">$ </span>
                 <span class="text-fg" data-text>
                   {line.cmd}
                 </span>
@@ -142,6 +142,11 @@ const payload = {
     align-items: center;
   }
 
+  /* Replay prompt glyphs stay hidden until that line's text is actually drawing. */
+  [data-terminal][data-playing] .terminal-line:not([data-shown]) [data-prompt] {
+    visibility: hidden;
+  }
+
   [data-terminal] .terminal-line[data-typing]::after {
     content: '';
     display: inline-block;
@@ -203,14 +208,19 @@ const payload = {
       let cancelled = false;
       const finish = () => {
         cancelled = true;
+        delete terminal.dataset.playing;
         for (const part of parts) {
           part.target.textContent = part.text;
           delete part.line.dataset.typing;
+          part.line.dataset.shown = 'true';
         }
         if (skip) skip.hidden = true;
         ready();
       };
 
+      // Hide every replay "$" before clearing the lines, so the glyphs never
+      // sit on screen ahead of the text they belong to.
+      terminal.dataset.playing = 'true';
       for (const part of parts) part.target.textContent = '';
       if (skip) {
         skip.hidden = false;
@@ -223,6 +233,7 @@ const payload = {
         await wait(220);
         for (const part of parts) {
           if (cancelled) return;
+          part.line.dataset.shown = 'true';
           part.line.dataset.typing = 'true';
 
           if (part.instant) {
@@ -240,6 +251,8 @@ const payload = {
           if (cancelled) return;
           delete part.line.dataset.typing;
         }
+        if (cancelled) return;
+        delete terminal.dataset.playing;
         if (skip) skip.hidden = true;
         ready();
       })();

@@ -2,8 +2,8 @@
  * Explorer mode: the visitor picks who they are and the home page re-prioritises.
  *
  * Every variant is server-rendered and toggled with CSS via `html[data-persona]`,
- * so there is no flash and no JavaScript requirement. `generic` is what first-time
- * visitors (and crawlers) see.
+ * so there is no flash and no JavaScript requirement. Hiring is the default for
+ * first-time visitors and crawlers. `generic` is unused fallback copy.
  */
 
 export type PersonaId = 'generic' | 'hiring' | 'founder' | 'browsing';

@@ -14,9 +14,9 @@ import { buildGraph, itemListNode, projectNode } from '../lib/seo';
 
 const graph = buildGraph([itemListNode(), ...projects.map(projectNode)]);
 
-// Server-rendered copy is the generic persona; the switch swaps it client-side.
-const generic = getPersona('generic');
-const headline = splitHeadline(generic.headline);
+// Server-rendered copy is the hiring persona, the default. The switch swaps it.
+const persona = getPersona('hiring');
+const headline = splitHeadline(persona.headline);
 ---
 
 <BaseLayout
@@ -24,10 +24,12 @@ const headline = splitHeadline(generic.headline);
   description={site.description}
   graph={graph}
 >
-  <section class="container-page pt-10 pb-8 sm:pt-16">
-    <div class="grid items-center gap-8 sm:gap-10 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
+  <section class="container-page pt-6 pb-8 sm:pt-10">
+    <PersonaSwitch />
+
+    <div class="mt-8 grid items-center gap-8 sm:mt-10 sm:gap-10 lg:grid-cols-[1.05fr_1fr] lg:mt-12 lg:gap-16">
       <div>
-        <div class="flex flex-wrap items-center gap-x-5 gap-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-x-5 gap-y-3">
           {
             site.availability && (
               <p class="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent-soft/30 px-3 py-1 text-xs text-accent">
@@ -36,6 +38,7 @@ const headline = splitHeadline(generic.headline);
               </p>
             )
           }
+          <LocalTime />
         </div>
 
         <h1 class="mt-5 text-[1.65rem] font-semibold leading-tight tracking-tight text-balance min-[480px]:text-4xl sm:mt-6 sm:text-5xl lg:text-[3.4rem] lg:leading-[1.05]">
@@ -49,29 +52,24 @@ const headline = splitHeadline(generic.headline);
           class="mt-4 max-w-xl text-base text-fg-soft text-pretty sm:mt-6 sm:text-lg"
           data-persona-field="intro"
         >
-          {generic.intro}
+          {persona.intro}
         </p>
 
         <div class="mt-6 flex flex-col gap-3 min-[400px]:flex-row min-[400px]:flex-wrap min-[400px]:items-center sm:mt-8">
           <a
-            href={generic.cta.href}
+            href={persona.cta.href}
             data-persona-field="cta"
             class="rounded-lg bg-accent px-5 py-3 text-center font-medium text-accent-fg transition-transform hover:-translate-y-0.5"
           >
-            {generic.cta.label}
+            {persona.cta.label}
           </a>
           <a
-            href={generic.secondary.href}
+            href={persona.secondary.href}
             data-persona-field="secondary"
             class="rounded-lg border border-line px-5 py-3 text-center font-medium text-fg-soft transition-colors hover:border-accent hover:text-accent"
           >
-            {generic.secondary.label}
+            {persona.secondary.label}
           </a>
-        </div>
-
-        <div class="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <PersonaSwitch />
-          <LocalTime />
         </div>
       </div>
 

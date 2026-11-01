@@ -20,18 +20,16 @@
       }
       document.documentElement.dataset.theme = theme;
 
-      // Explorer mode persona: same trick, so CSS-driven ordering is right on first paint.
-      let persona = null;
+      // Explorer mode persona: hiring unless the visitor already chose otherwise,
+      // so CSS-driven ordering is right on first paint.
+      let persona = 'hiring';
       try {
-        persona = localStorage.getItem('persona');
+        const stored = localStorage.getItem('persona');
+        if (stored === 'hiring' || stored === 'founder' || stored === 'browsing') persona = stored;
       } catch {
         /* private mode */
       }
-      if (persona === 'hiring' || persona === 'founder' || persona === 'browsing') {
-        document.documentElement.dataset.persona = persona;
-      } else {
-        delete document.documentElement.dataset.persona;
-      }
+      document.documentElement.dataset.persona = persona;
     };
 
     apply();
