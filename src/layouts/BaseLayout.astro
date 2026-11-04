@@ -54,6 +54,15 @@ const { title, description, graph, ogType, noindex, image } = Astro.props;
   </head>
 
   <body class="min-h-dvh overflow-x-clip">
+    {
+      /*
+        Cloudflare's email obfuscation rewrites mailto links in the HTML it serves.
+        Its decoder does not run again after a client-side navigation, so the link
+        opens Cloudflare's "unable to access this email address" page. These markers
+        are the documented way to leave the address alone.
+      */
+    }
+    <!--email_off-->
     <div class="page-wash" aria-hidden="true"></div>
     <a
       href="#main"
@@ -72,5 +81,6 @@ const { title, description, graph, ogType, noindex, image } = Astro.props;
     <EasterEgg />
     <QuestHud />
     <TerminalPanel />
+    <!--/email_off-->
   </body>
 </html>
