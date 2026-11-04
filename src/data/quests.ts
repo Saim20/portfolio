@@ -15,7 +15,7 @@ export type Quest = {
 export const quests: Quest[] = [
   { id: 'first-steps', title: 'First steps', hint: 'Scroll past the hero.', icon: 'arrow-down' },
   { id: 'persona', title: 'Know thyself', hint: 'Tell the home page who you are.', icon: 'users' },
-  { id: 'terminal', title: 'Hello, shell', hint: 'The terminal on the home page takes input.', icon: 'terminal' },
+  { id: 'terminal', title: 'Hello, shell', hint: 'Open the terminal from the side and type.', icon: 'terminal' },
   { id: 'hacker', title: 'Power user', hint: 'Run five different commands.', icon: 'zap' },
   { id: 'case-study', title: 'Reader', hint: 'Open any case study.', icon: 'book' },
   { id: 'completionist', title: 'Completionist', hint: 'Read every case study, including the old one.', icon: 'layers' },

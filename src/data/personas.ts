@@ -58,7 +58,7 @@ export const personas: Persona[] = [
     label: 'Just looking',
     headline: 'Welcome. There is *more here than it looks* - go explore.',
     intro:
-      'The terminal on the right actually works: type help. There are achievements to find, a hidden git log, and a page that only unlocks once you have seen everything.',
+      'The terminal on the side actually works: open it and type help. There are achievements to find, a hidden git log, and a page that only unlocks once you have seen everything.',
     cta: { label: 'Open the work', href: '/work' },
     secondary: { label: 'Who is this?', href: '/about' },
     lead: ['live', 'rating'],

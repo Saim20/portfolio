@@ -44,8 +44,8 @@ const others = projects.filter((entry) => entry.slug !== project.slug).slice(0, 
     </nav>
 
     <header class="mt-8 max-w-3xl">
-      <div class="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs uppercase tracking-[0.16em] text-muted">
-        <span class="text-accent">{project.category}</span>
+      <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-sm text-muted">
+        <span class="kicker text-accent">{project.category}</span>
         <span aria-hidden="true">/</span>
         <span>{project.role}</span>
         <span aria-hidden="true">/</span>
@@ -101,7 +101,7 @@ const others = projects.filter((entry) => entry.slug !== project.slug).slice(0, 
       {
         project.highlights.map((highlight) => (
           <div>
-            <dt class="font-mono text-[0.68rem] uppercase tracking-[0.16em] text-muted">
+            <dt class="kicker text-muted">
               {highlight.label}
             </dt>
             <dd class="mt-2 text-sm text-fg">{highlight.value}</dd>
@@ -129,7 +129,7 @@ const others = projects.filter((entry) => entry.slug !== project.slug).slice(0, 
       </div>
 
       <aside class="lg:pt-1">
-        <h2 class="font-mono text-xs uppercase tracking-[0.16em] text-muted">Stack</h2>
+        <h2 class="kicker text-muted">Stack</h2>
         <ul class="mt-4 flex flex-wrap gap-1.5">
           {
             project.stack.map((tech) => (
@@ -140,17 +140,17 @@ const others = projects.filter((entry) => entry.slug !== project.slug).slice(0, 
           }
         </ul>
 
-        <h2 class="mt-8 font-mono text-xs uppercase tracking-[0.16em] text-muted">Role</h2>
+        <h2 class="kicker mt-8 text-muted">Role</h2>
         <p class="mt-3 text-sm text-fg-soft">{project.role}</p>
 
-        <h2 class="mt-8 font-mono text-xs uppercase tracking-[0.16em] text-muted">Timeline</h2>
+        <h2 class="kicker mt-8 text-muted">Timeline</h2>
         <p class="mt-3 text-sm text-fg-soft">{project.period}</p>
       </aside>
     </div>
   </article>
 
   <section aria-labelledby="next-heading" class="container-page py-16">
-    <h2 id="next-heading" class="font-mono text-xs uppercase tracking-[0.2em] text-muted">
+    <h2 id="next-heading" class="kicker text-muted">
       Next up
     </h2>
     <ul class="mt-6 divide-y divide-line border-y border-line">

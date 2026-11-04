@@ -2,23 +2,22 @@
 import { personas } from '../data/personas';
 import { certifications, education } from '../data/site';
 import { projects } from '../data/projects';
-import Icon from './Icon.astro';
 
 /**
- * The five facts a visitor needs before they scroll. Personas promote some chips
+ * The five facts a visitor needs before they scroll. Personas promote some facts
  * to the front with CSS `order`, so the markup is identical for everyone.
  */
 const live = projects.filter((project) => project.live).length;
 const highlighted = certifications.find((cert) => cert.highlight);
 
 const chips = [
-  { id: 'years', icon: 'clock', value: '5+', label: 'years shipping production software' },
-  { id: 'live', icon: 'box', value: String(live), label: 'products live for real users' },
-  { id: 'rating', icon: 'star', value: '4.3 / 5', label: 'StuDays on the App Store' },
+  { id: 'years', value: '5+', label: 'years shipping production software' },
+  { id: 'live', value: String(live), label: 'products live for real users' },
+  { id: 'rating', value: '4.3 / 5', label: 'StuDays on the App Store' },
   ...(highlighted
-    ? [{ id: 'ielts', icon: 'award', value: highlighted.name.replace('IELTS ', ''), label: 'IELTS' }]
+    ? [{ id: 'ielts', value: highlighted.name.replace('IELTS ', ''), label: 'IELTS' }]
     : []),
-  { id: 'iba', icon: 'school', value: 'IBA', label: `${education[0].credential.split(',')[0]}, University of Dhaka` },
+  { id: 'iba', value: 'IBA', label: `${education[0].credential.split(',')[0]}, University of Dhaka` },
 ];
 
 // e.g. html[data-persona="hiring"] [data-proof="ielts"] { order: -3 }
@@ -35,15 +34,9 @@ const orderCss = personas
 <dl class="proof-strip" aria-label="Key facts">
   {
     chips.map((chip) => (
-      <div data-proof={chip.id} class="proof-chip">
-        <dt class="sr-only">{chip.label}</dt>
-        <dd>
-          <span class="flex items-center gap-2.5">
-            <Icon name={chip.icon} class="size-5 shrink-0 text-accent" />
-            <span class="text-2xl font-semibold leading-none tracking-tight text-accent">{chip.value}</span>
-          </span>
-          <span class="mt-2 block pl-8 text-sm leading-snug text-muted">{chip.label}</span>
-        </dd>
+      <div data-proof={chip.id} class="proof-fact">
+        <dd class="proof-value">{chip.value}</dd>
+        <dt class="proof-label">{chip.label}</dt>
       </div>
     ))
   }
@@ -53,29 +46,30 @@ const orderCss = personas
 
 <style>
   .proof-strip {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.35rem 2.25rem;
   }
 
-  @media (width >= 40rem) {
-    .proof-strip {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
+  .proof-fact {
+    flex: 1 1 9rem;
+    min-width: 0;
   }
 
-  @media (width >= 64rem) {
-    .proof-strip {
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 0.85rem;
-    }
+  .proof-value {
+    font-family: var(--font-serif);
+    font-size: 1.85rem;
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: var(--color-fg);
   }
 
-  .proof-chip {
-    height: 100%;
-    border: 1px solid var(--color-line);
-    border-radius: 0.9rem;
-    background: var(--color-surface);
-    padding: 0.95rem 1rem 1rem;
+  .proof-label {
+    margin-top: 0.3rem;
+    max-width: 14rem;
+    font-size: 0.875rem;
+    line-height: 1.35;
+    color: var(--color-muted);
   }
 </style>

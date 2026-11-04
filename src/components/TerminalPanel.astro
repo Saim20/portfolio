@@ -1,0 +1,226 @@
+---
+import TerminalHero from './TerminalHero.astro';
+import Icon from './Icon.astro';
+---
+
+<div data-terminal-shell>
+  <button
+    type="button"
+    data-terminal-open
+    class="terminal-launcher"
+    aria-expanded="false"
+    aria-controls="terminal-panel"
+    aria-haspopup="dialog"
+  >
+    <Icon name="terminal" class="size-5" />
+    <span class="sr-only">Open terminal</span>
+  </button>
+
+  <div
+    id="terminal-panel"
+    data-terminal-panel
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="terminal-panel-title"
+    hidden
+    class="terminal-panel"
+  >
+    <div class="terminal-panel-frame">
+      <header class="flex items-center justify-between gap-4">
+        <p id="terminal-panel-title" class="kicker text-fg">Terminal</p>
+        <button
+          type="button"
+          data-terminal-close
+          class="rounded-md px-3 py-2 text-sm text-muted transition-colors hover:text-fg"
+        >
+          Close
+        </button>
+      </header>
+      <TerminalHero />
+    </div>
+  </div>
+</div>
+
+<style is:global>
+  .terminal-panel {
+    position: fixed;
+    z-index: 120;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-bg);
+    padding: max(0.75rem, env(safe-area-inset-top, 0px))
+      max(1rem, env(safe-area-inset-right, 0px)) max(0.75rem, env(safe-area-inset-bottom, 0px))
+      max(1rem, env(safe-area-inset-left, 0px));
+  }
+
+  .terminal-panel[hidden] {
+    display: none !important;
+  }
+
+  .terminal-panel-frame {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-height: 0;
+  }
+
+  [data-terminal-panel] [data-terminal] {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  [data-terminal-panel] .terminal-window {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+    box-shadow: none;
+  }
+
+  [data-terminal-panel] .terminal-window > :not(.terminal-body) {
+    flex-shrink: 0;
+  }
+
+  [data-terminal-panel] [data-terminal] .terminal-body {
+    flex: 1;
+    height: auto;
+    min-height: 0;
+    font-size: 1rem;
+    line-height: 1.45;
+  }
+
+  [data-terminal-panel] .terminal-input {
+    font-size: 1rem;
+  }
+
+  /* The window fills the screen, so suggestions open upward over the output. */
+  [data-terminal-panel] [data-terminal] .terminal-suggest {
+    top: auto;
+    right: 0.75rem;
+    bottom: 3.25rem;
+    left: 0.75rem;
+  }
+</style>
+
+<script is:inline>
+  if (!window.__terminalPanel) {
+    window.__terminalPanel = true;
+
+    const panel = () => document.querySelector('[data-terminal-panel]');
+    const launcher = () => document.querySelector('[data-terminal-open]');
+
+    const focusable = (root) =>
+      [...root.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), textarea, select, [tabindex]:not([tabindex="-1"])')].filter(
+        (el) => !el.closest('[hidden]') && !el.hasAttribute('disabled'),
+      );
+
+    const clearInert = () => {
+      for (const el of document.querySelectorAll('[data-inerted="terminal"]')) {
+        el.removeAttribute('inert');
+        el.removeAttribute('data-inerted');
+      }
+    };
+
+    const close = () => {
+      const dialog = panel();
+      const open = launcher();
+      if (!dialog || dialog.hidden) return;
+      dialog.hidden = true;
+      document.documentElement.removeAttribute('data-terminal-active');
+      document.documentElement.style.overflow = '';
+      clearInert();
+      if (open) {
+        open.hidden = false;
+        open.setAttribute('aria-expanded', 'false');
+        open.focus();
+      }
+    };
+
+    const open = () => {
+      const dialog = panel();
+      const button = launcher();
+      if (!dialog || !dialog.hidden) return;
+      const shell = dialog.closest('[data-terminal-shell]');
+      for (const child of document.body.children) {
+        if (child === shell || child.hasAttribute('inert')) continue;
+        child.setAttribute('inert', '');
+        child.setAttribute('data-inerted', 'terminal');
+      }
+      dialog.hidden = false;
+      if (button) {
+        button.hidden = true;
+        button.setAttribute('aria-expanded', 'true');
+      }
+      document.documentElement.dataset.terminalActive = 'true';
+      document.documentElement.style.overflow = 'hidden';
+
+      const closeBtn = dialog.querySelector('[data-terminal-close]');
+      if (closeBtn) closeBtn.focus();
+      document.dispatchEvent(new CustomEvent('terminal:open'));
+
+      const terminal = dialog.querySelector('[data-terminal]');
+      const focusInput = () => {
+        const input = dialog.querySelector('[data-terminal-input]');
+        if (!input || input.closest('[hidden]')) return;
+        if (document.activeElement === closeBtn) input.focus();
+      };
+      if (terminal?.dataset.ready) {
+        focusInput();
+      } else if (terminal) {
+        const observer = new MutationObserver(() => {
+          if (!terminal.dataset.ready) return;
+          observer.disconnect();
+          if (!dialog.hidden) focusInput();
+        });
+        observer.observe(terminal, { attributes: true, attributeFilter: ['data-ready'] });
+      }
+    };
+
+    document.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      if (target.closest('[data-terminal-open]')) {
+        event.preventDefault();
+        open();
+        return;
+      }
+      if (target.closest('[data-terminal-close]')) close();
+    });
+
+    document.addEventListener(
+      'keydown',
+      (event) => {
+        const dialog = panel();
+        if (!dialog || dialog.hidden) return;
+        if (event.key === 'Escape') {
+          const suggest = dialog.querySelector('[data-terminal-suggest]');
+          if (suggest && !suggest.hidden) return;
+          event.preventDefault();
+          event.stopPropagation();
+          close();
+          return;
+        }
+        if (event.key !== 'Tab') return;
+        const items = focusable(dialog);
+        if (!items.length) return;
+        const first = items[0];
+        const last = items[items.length - 1];
+        const active = document.activeElement;
+        if (event.shiftKey && (active === first || !dialog.contains(active))) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && (active === last || !dialog.contains(active))) {
+          event.preventDefault();
+          first.focus();
+        }
+      },
+      true,
+    );
+
+    document.addEventListener('astro:before-swap', close);
+  }
+</script>

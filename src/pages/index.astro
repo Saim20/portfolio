@@ -1,26 +1,19 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/Section.astro';
-import TerminalHero from '../components/TerminalHero.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import LocalTime from '../components/LocalTime.astro';
 import PersonaSwitch from '../components/PersonaSwitch.astro';
 import ProofStrip from '../components/ProofStrip.astro';
 import NowCard from '../components/NowCard.astro';
-import Icon from '../components/Icon.astro';
 import { site, services, skillGroups } from '../data/site';
 import { featuredProjects, projects } from '../data/projects';
 import { getPersona, splitHeadline } from '../data/personas';
 import { buildGraph, itemListNode, projectNode } from '../lib/seo';
+import portrait from '../assets/portrait.jpg';
 
 const graph = buildGraph([itemListNode(), ...projects.map(projectNode)]);
-
-const serviceIcons: Record<string, string> = {
-  'Product from zero to launch': 'rocket',
-  'Web platforms': 'globe',
-  'Mobile apps': 'phone',
-  'Technical leadership': 'users',
-};
 
 // Server-rendered copy is the hiring persona, the default. The switch swaps it.
 const persona = getPersona('hiring');
@@ -32,68 +25,69 @@ const headline = splitHeadline(persona.headline);
   description={site.description}
   graph={graph}
 >
-  <section class="container-page pt-6 pb-8 sm:pt-10">
-    <div class="grid items-start gap-10 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
-      <div>
-        <div class="flex flex-wrap items-center justify-between gap-x-5 gap-y-3">
-          {
-            site.availability && (
-              <p class="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent-soft px-3 py-1 text-xs font-medium text-accent">
-                <span class="size-1.5 rounded-full bg-accent" aria-hidden="true" />
-                {site.availability}
-              </p>
-            )
-          }
-          <LocalTime />
-        </div>
-
-        <h1 class="mt-5 text-[1.65rem] font-semibold leading-tight tracking-tight text-balance min-[480px]:text-4xl sm:mt-6 sm:text-5xl lg:text-[3.4rem] lg:leading-[1.05]">
-          <span data-persona-field="headline-before">{headline.before}</span><span
-            class="text-accent"
-            data-persona-field="headline-accent">{headline.accent}</span
-          ><span data-persona-field="headline-after">{headline.after}</span>
-        </h1>
-
-        <p
-          class="mt-4 max-w-xl text-base text-fg-soft text-pretty sm:mt-6 sm:text-lg"
-          data-persona-field="intro"
-        >
-          {persona.intro}
-        </p>
-
-        <div class="mt-6 flex flex-col gap-3 min-[400px]:flex-row min-[400px]:flex-wrap min-[400px]:items-center sm:mt-8">
-          <a
-            href={persona.cta.href}
-            data-persona-field="cta"
-            class="rounded-lg bg-accent px-5 py-3 text-center font-medium text-accent-fg shadow-sm transition-transform hover:-translate-y-0.5"
-          >
-            {persona.cta.label}
-          </a>
-          <a
-            href={persona.secondary.href}
-            data-persona-field="secondary"
-            class="rounded-lg border border-line bg-surface px-5 py-3 text-center font-medium text-fg-soft transition-colors hover:border-accent hover:text-accent"
-          >
-            {persona.secondary.label}
-          </a>
-        </div>
-      </div>
-
-      <div class="min-w-0">
-        <div data-quest-slot class="mb-4">
-          <div data-quest-sentinel></div>
-        </div>
-        <div data-terminal-column class="band p-4 sm:p-5">
-        <div class="keyboard-cue mb-4 flex items-center gap-3">
-          <p class="min-w-0 text-3xl font-semibold tracking-tight text-balance sm:text-4xl">Keyboard Lover?</p>
-          <Icon name="arrow-down" class="keyboard-cue-arrow size-8 shrink-0 text-accent" />
-        </div>
-        <TerminalHero />
-        </div>
-      </div>
+  <section class="hero" aria-label="Introduction">
+    <div class="hero-wash" aria-hidden="true"></div>
+    <div class="hero-portrait">
+      <Image
+        src={portrait}
+        alt="SM Saimul Islam standing by a railing above a hazy lake"
+        widths={[640, 960, 1280, 1600]}
+        sizes="(min-width: 64rem) 58vw, 100vw"
+        quality={75}
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+        class="hero-portrait-img"
+      />
     </div>
 
-    <div class="mt-8 sm:mt-10">
+    <div class="container-page">
+      <div class="hero-copy">
+      <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+        {
+          site.availability && (
+            <p class="kicker text-accent">{site.availability}</p>
+          )
+        }
+        <LocalTime />
+      </div>
+
+      <h1 class="mt-4 text-[1.85rem] leading-[1.12] text-balance min-[480px]:text-4xl sm:mt-5 sm:text-5xl lg:text-[3.35rem] lg:leading-[1.08]">
+        <span data-persona-field="headline-before">{headline.before}</span><span
+          class="text-accent"
+          data-persona-field="headline-accent">{headline.accent}</span
+        ><span data-persona-field="headline-after">{headline.after}</span>
+      </h1>
+
+      <p
+        class="mt-4 max-w-xl text-base text-fg-soft text-pretty sm:mt-5 sm:text-lg"
+        data-persona-field="intro"
+      >
+        {persona.intro}
+      </p>
+
+      <div class="mt-6 flex flex-wrap items-center gap-3 sm:mt-8">
+        <a
+          href={persona.cta.href}
+          data-persona-field="cta"
+          class="rounded-lg bg-accent px-5 py-3 text-center font-medium text-accent-fg shadow-sm transition-transform hover:-translate-y-0.5"
+        >
+          {persona.cta.label}
+        </a>
+        <a
+          href={persona.secondary.href}
+          data-persona-field="secondary"
+          class="rounded-lg border border-line bg-surface/80 px-5 py-3 text-center font-medium text-fg-soft transition-colors hover:border-accent hover:text-accent"
+        >
+          {persona.secondary.label}
+        </a>
+      </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="container-page pb-4">
+    <div class="mt-8 sm:mt-12">
       <PersonaSwitch />
     </div>
 
@@ -102,10 +96,10 @@ const headline = splitHeadline(persona.headline);
       window.__applyPersona && window.__applyPersona();
     </script>
 
-    <div class="band mt-10 px-4 py-6 sm:mt-14 sm:px-6 sm:py-8">
+    <div class="mt-10 sm:mt-14">
       <ProofStrip />
     </div>
-  </section>
+  </div>
 
   <!-- Sections below are reordered per persona with CSS `order` (see global.css). -->
   <div class="flex flex-col" data-home-sections>
@@ -149,14 +143,11 @@ const headline = splitHeadline(persona.headline);
       title="One person for the whole technical scope"
       lead="A business degree from IBA and five years of shipping code means you get strategy and execution from the same conversation."
     >
-      <div class="grid gap-6 sm:grid-cols-2">
+      <div class="grid gap-x-12 gap-y-8 sm:grid-cols-2">
         {
           services.map((service) => (
-            <div class="reveal rounded-xl border border-line bg-surface p-6 shadow-sm transition-colors hover:border-accent/50">
-              <span class="grid size-10 place-items-center rounded-lg bg-accent-soft text-accent">
-                <Icon name={serviceIcons[service.title] ?? 'rocket'} class="size-5" />
-              </span>
-              <h3 class="mt-4 text-lg font-semibold tracking-tight">{service.title}</h3>
+            <div class="reveal border-t border-line pt-5">
+              <h3 class="text-xl">{service.title}</h3>
               <p class="mt-2 text-sm text-fg-soft">{service.body}</p>
             </div>
           ))
@@ -169,7 +160,7 @@ const headline = splitHeadline(persona.headline);
         {
           skillGroups.map((group) => (
             <div class="reveal">
-              <h3 class="font-mono text-xs uppercase tracking-[0.16em] text-muted">{group.label}</h3>
+              <h3 class="kicker text-muted">{group.label}</h3>
               <ul class="mt-4 space-y-2 text-sm text-fg-soft">
                 {group.items.map((item) => (
                   <li>{item}</li>
@@ -181,12 +172,12 @@ const headline = splitHeadline(persona.headline);
       </div>
     </Section>
 
-    <section class="container-page py-16" style="order: 100">
-      <div class="reveal rounded-2xl border border-line bg-surface/60 p-6 text-center sm:p-12">
-        <h2 class="text-2xl font-semibold tracking-tight sm:text-3xl text-balance">
+    <section class="container-page py-8 sm:py-16" style="order: 100">
+      <div class="reveal max-w-xl">
+        <h2 class="text-3xl text-balance sm:text-4xl">
           Have something that needs building?
         </h2>
-        <p class="mx-auto mt-4 max-w-md text-fg-soft">
+        <p class="mt-4 max-w-md text-fg-soft">
           Tell me what you are trying to ship. I will tell you honestly whether I am the right person
           for it.
         </p>

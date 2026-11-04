@@ -1,5 +1,5 @@
 /**
- * The home-page terminal, once the replay has finished (or been skipped), takes
+ * The terminal panel, once the replay has finished (or been skipped), takes
  * real input. Commands navigate the site, open the easter egg, flip the theme,
  * and feed the achievement system.
  *
@@ -251,6 +251,7 @@ function pushLog(entry: LogEntry) {
 type Suggestion = { label: string; value: string };
 
 let bound: HTMLElement | null = null;
+let readyObserver: MutationObserver | null = null;
 
 export function mountTerminal(terminal: HTMLElement) {
   if (bound === terminal) return;
@@ -565,23 +566,25 @@ export function mountTerminal(terminal: HTMLElement) {
 }
 
 function init() {
+  readyObserver?.disconnect();
+  readyObserver = null;
   const terminal = document.querySelector<HTMLElement>('[data-terminal]');
   if (!terminal) {
     bound = null;
     return;
   }
-  // Wait for the replay (TerminalHero sets data-ready when done or skipped).
+  // Wait for the replay (TerminalHero sets data-ready when the panel opens).
   if (terminal.dataset.ready) {
     mountTerminal(terminal);
     return;
   }
-  const observer = new MutationObserver(() => {
-    if (terminal.dataset.ready) {
-      observer.disconnect();
-      mountTerminal(terminal);
-    }
+  readyObserver = new MutationObserver(() => {
+    if (!terminal.dataset.ready) return;
+    readyObserver?.disconnect();
+    readyObserver = null;
+    mountTerminal(terminal);
   });
-  observer.observe(terminal, { attributes: true, attributeFilter: ['data-ready'] });
+  readyObserver.observe(terminal, { attributes: true, attributeFilter: ['data-ready'] });
 }
 
 document.addEventListener('astro:page-load', init);

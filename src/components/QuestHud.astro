@@ -3,9 +3,9 @@ import { quests, QUEST_TOTAL } from '../data/quests';
 import Icon from './Icon.astro';
 
 /**
- * Explorer card. On the home page an inline script parks it in the slot above
- * the terminal before first paint. Scrolling past that slot docks it to the
- * bottom-right. Every other page starts docked. Visible from 0 / 10.
+ * Explorer card. If a page includes [data-quest-sentinel], the card parks there
+ * until that spot scrolls away, then docks to the bottom-right. Otherwise it
+ * starts docked. Visible from 0 / 10.
  */
 const circumference = 2 * Math.PI * 9;
 ---

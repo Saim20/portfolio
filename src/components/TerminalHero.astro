@@ -8,8 +8,8 @@ import { quests } from '../data/quests';
  * crawlers and for anyone without JavaScript. The inline script replays it as
  * typing; once that finishes (or is skipped) it flags `data-ready` and
  * src/scripts/terminal.ts turns the last line into a working prompt.
- * Lines wrap inside the fixed-height body, so a long line never opens a
- * horizontal scrollbar.
+ * Lines wrap inside the body, so a long line never opens a horizontal
+ * scrollbar. The panel gives the body a flex height; this component does not.
  */
 const lines: Array<{ cmd?: string; out?: string; accent?: boolean }> = [
   { cmd: 'whoami' },
@@ -44,7 +44,7 @@ const payload = {
 ---
 
 <div class="relative" data-terminal>
-  <div class="overflow-hidden rounded-xl border border-line bg-surface shadow-2xl shadow-black/20">
+  <div class="terminal-window overflow-hidden rounded-xl border border-line bg-surface shadow-2xl shadow-black/20">
   <div class="flex min-w-0 items-center gap-2 border-b border-line bg-surface-2 px-3 py-2 sm:gap-3 sm:px-4 sm:py-2.5">
     <span class="flex shrink-0 gap-1.5" aria-hidden="true">
       <span class="size-2.5 rounded-full bg-[#ff5f57]"></span>
@@ -145,8 +145,7 @@ const payload = {
 
   [data-terminal] .terminal-body {
     position: relative;
-    /* Fixed at 11 lines: room for the prompt and a little output, no layout shift. */
-    height: calc(11 * 1.35em + 1.75rem);
+    min-height: 0;
     scrollbar-width: thin;
   }
 
@@ -322,7 +321,7 @@ const payload = {
       })();
     };
 
-    document.addEventListener('astro:page-load', run);
+    document.addEventListener('terminal:open', run);
   }
 </script>
 

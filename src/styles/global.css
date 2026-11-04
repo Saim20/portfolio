@@ -3,23 +3,27 @@
 /*
   Light is the designed default. Dark is an override for a stored choice.
   ThemeScript sets data-theme before first paint, so this never flashes.
+
+  The palette is taken from the lakeside portrait: warm fog, sand, weathered
+  wood, and a dulled water teal. Dark mode is night water, not a black dashboard.
 */
 @theme {
   --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-serif: var(--font-newsreader), Georgia, "Times New Roman", serif;
   --font-mono: var(--font-jbmono), ui-monospace, monospace;
 
-  --color-bg: #f4f7fb;
-  --color-surface: #ffffff;
-  --color-surface-2: #e7eef6;
-  --color-line: #d5deea;
-  --color-fg: #12181f;
-  --color-fg-soft: #334155;
-  --color-muted: #5c6b7a;
-  --color-accent: #0f766e;
-  --color-accent-soft: #d5f5ef;
-  --color-accent-fg: #ffffff;
-  --color-warm: #b45309;
-  --color-error: #b91c1c;
+  --color-bg: #e6e1d6;
+  --color-surface: #f3efe6;
+  --color-surface-2: #ddd6c8;
+  --color-line: #cfc3b2;
+  --color-fg: #1c1915;
+  --color-fg-soft: #3e3832;
+  --color-muted: #5f574e;
+  --color-accent: #2f5852;
+  --color-accent-soft: #d7e6e1;
+  --color-accent-fg: #f6f3ec;
+  --color-warm: #7a4c28;
+  --color-error: #9c3b32;
 
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -30,18 +34,18 @@
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --color-bg: #0a0e13;
-  --color-surface: #11171f;
-  --color-surface-2: #161e28;
-  --color-line: #212b37;
-  --color-fg: #e8eef5;
-  --color-fg-soft: #b6c2cf;
-  --color-muted: #8695a5;
-  --color-accent: #5eead4;
-  --color-accent-soft: #134e4a;
-  --color-accent-fg: #04211d;
-  --color-warm: #fbbf24;
-  --color-error: #f87171;
+  --color-bg: #121816;
+  --color-surface: #1b2420;
+  --color-surface-2: #24302b;
+  --color-line: #3c4a43;
+  --color-fg: #ebe6dc;
+  --color-fg-soft: #cfc6b8;
+  --color-muted: #948c81;
+  --color-accent: #9ec9be;
+  --color-accent-soft: #1c3330;
+  --color-accent-fg: #10211e;
+  --color-warm: #e2b48a;
+  --color-error: #f0a8a0;
 }
 
 html {
@@ -54,6 +58,17 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  /* Keeps the fixed portrait wash (z-index: -1) above the body background
+     and below the page content. */
+  isolation: isolate;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  letter-spacing: -0.02em;
 }
 
 ::selection {
@@ -94,6 +109,16 @@ body {
     padding-inline: max(2rem, env(safe-area-inset-left, 0px))
       max(2rem, env(safe-area-inset-right, 0px));
   }
+}
+
+/* Small serif label. Color is set at the call site (text-accent, text-muted, text-warm). */
+@utility kicker {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 1.05rem;
+  line-height: 1.35;
+  letter-spacing: 0;
 }
 
 /*
@@ -139,29 +164,148 @@ html[data-persona="browsing"] [data-home-sections] > #stack {
   }
 }
 
-/* Points at the terminal. Reduced motion zeroes every animation above. */
-.keyboard-cue-arrow {
-  animation: cue-bob 1.4s ease-in-out infinite;
+/* Faint portrait wash on every page, so inner pages are not a flat fill. */
+.page-wash {
+  position: fixed;
+  z-index: -1;
+  inset: -8%;
+  pointer-events: none;
+  background-image: var(--portrait-wash);
+  background-size: cover;
+  background-position: center 22%;
+  filter: blur(16px) saturate(0.72);
+  opacity: 0.16;
+  mask-image: linear-gradient(to bottom, #000 0%, transparent 82%);
 }
 
-@keyframes cue-bob {
-  50% {
-    translate: 0 0.4rem;
+:root[data-theme="dark"] .page-wash {
+  opacity: 0.22;
+  filter: blur(18px) saturate(0.55) brightness(0.45);
+}
+
+/* Homepage portrait. The sharp photo and a softer wash share this section. */
+.hero {
+  position: relative;
+  isolation: isolate;
+}
+
+.hero-wash {
+  position: absolute;
+  z-index: 0;
+  inset: -1.5rem 0 0;
+  pointer-events: none;
+  background-image: var(--portrait-wash);
+  background-size: cover;
+  background-position: 72% 18%;
+  filter: blur(32px) saturate(0.7);
+  opacity: 0.4;
+  mask-image: linear-gradient(to bottom, #000 0%, #000 22%, transparent 76%);
+}
+
+:root[data-theme="dark"] .hero-wash {
+  opacity: 0.34;
+  filter: blur(34px) saturate(0.5) brightness(0.5);
+}
+
+.hero-portrait {
+  position: relative;
+  z-index: 0;
+  height: calc(46svh + 3.5rem);
+  margin-top: -3.5rem;
+  overflow: hidden;
+  mask-image: linear-gradient(to bottom, #000 40%, transparent 100%);
+}
+
+.hero-portrait-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 24%;
+}
+
+:root[data-theme="dark"] .hero-portrait-img {
+  filter: saturate(0.8) brightness(0.72);
+}
+
+.hero-copy {
+  position: relative;
+  z-index: 1;
+  margin-top: -16svh;
+  padding-bottom: 0.5rem;
+  background: linear-gradient(
+    to bottom,
+    transparent 0,
+    color-mix(in oklab, var(--color-bg) 84%, transparent) 1rem,
+    var(--color-bg) 5rem
+  );
+}
+
+/* Short phones: a shorter photo so the actions clear the floating controls. */
+@media (width < 64rem) and (height <= 740px) {
+  .hero-portrait {
+    height: calc(34svh + 3.5rem);
   }
 }
 
-/* Tinted band for the terminal column and the proof strip. */
-@utility band {
-  background-color: color-mix(in oklab, var(--color-accent) 7%, var(--color-surface));
-  border: 1px solid var(--color-line);
-  border-radius: 1rem;
+@media (width >= 64rem) {
+  .hero {
+    min-height: min(44rem, 86vh);
+  }
+
+  .hero-portrait {
+    position: absolute;
+    inset: 0 0 0 auto;
+    width: min(58vw, 52rem);
+    height: auto;
+    mask-image: linear-gradient(to right, transparent 0%, #000 32%),
+      linear-gradient(to bottom, #000 62%, transparent 100%);
+    mask-composite: intersect;
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 32%),
+      linear-gradient(to bottom, #000 62%, transparent 100%);
+    -webkit-mask-composite: source-in;
+  }
+
+  .hero {
+    margin-top: 0;
+  }
+
+  .hero-portrait {
+    margin-top: 0;
+    height: auto;
+  }
+
+  .hero-copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: min(34rem, 46%);
+    min-height: min(40rem, 78vh);
+    margin-top: 0;
+    padding-top: 1.5rem;
+    padding-bottom: 2.5rem;
+    background: none;
+  }
 }
 
-/* Subtle top-of-page glow; purely decorative, costs nothing to paint. */
-@utility page-glow {
-  background-image: radial-gradient(
-    60rem 30rem at 50% -12rem,
-    color-mix(in oklab, var(--color-accent) 14%, transparent),
-    transparent 70%
-  );
+/* Opens the full-screen terminal. Sits just above the docked explorer pill. */
+.terminal-launcher {
+  position: fixed;
+  z-index: 85;
+  right: 0;
+  bottom: calc(max(1rem, env(safe-area-inset-bottom, 0px)) + 4.5rem);
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  border: 1px solid var(--color-line);
+  border-right: 0;
+  border-radius: 999px 0 0 999px;
+  background: color-mix(in oklab, var(--color-bg) 84%, transparent);
+  color: var(--color-fg);
+  backdrop-filter: blur(10px);
+}
+
+.terminal-launcher:hover {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
 }

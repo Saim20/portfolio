@@ -1,17 +1,10 @@
 ---
 import { personas } from '../data/personas';
-import Icon from './Icon.astro';
-
-const personaIcons: Record<string, string> = {
-  hiring: 'briefcase',
-  founder: 'rocket',
-  browsing: 'compass',
-};
 
 /**
- * "Who are you?" segmented control. The choice is stored as `html[data-persona]`
+ * "Who are you?" text choice. The choice is stored as `html[data-persona]`
  * (set before paint by ThemeScript) and in localStorage. Hero copy is swapped by
- * the inline script below; section order and proof-chip emphasis are pure CSS.
+ * the inline script below; section order and proof-fact emphasis are pure CSS.
  */
 const options = personas.filter((persona) => persona.id !== 'generic');
 const payload = Object.fromEntries(
@@ -27,24 +20,17 @@ const payload = Object.fromEntries(
 );
 ---
 
-<div class="persona-switch w-full" data-persona-switch>
-  <p id="persona-switch-label" class="text-lg font-semibold tracking-tight text-fg">
-    Perspective
-  </p>
-  <div
-    role="group"
-    aria-labelledby="persona-switch-label"
-    class="mt-3 grid grid-cols-3 gap-2 sm:mt-4 sm:gap-3"
-  >
+<div class="persona-switch" data-persona-switch>
+  <p id="persona-switch-label" class="kicker text-muted">Perspective</p>
+  <div role="group" aria-labelledby="persona-switch-label" class="mt-3 flex flex-wrap gap-x-6 gap-y-2">
     {
       options.map((persona) => (
         <button
           type="button"
           data-persona-option={persona.id}
           aria-pressed={persona.id === 'hiring' ? 'true' : 'false'}
-          class="flex min-h-16 flex-col items-center justify-center gap-1.5 rounded-xl border-2 border-line bg-surface px-2 py-3 text-center text-sm font-semibold leading-tight text-fg shadow-sm transition-colors hover:border-accent/70 sm:min-h-20 sm:text-base"
+          class="persona-option"
         >
-          <Icon name={personaIcons[persona.id] ?? 'compass'} class="size-5" />
           {persona.label}
         </button>
       ))
@@ -55,14 +41,30 @@ const payload = Object.fromEntries(
 <script is:inline type="application/json" data-persona-data set:html={JSON.stringify(payload)} />
 
 <style>
-  /* Active segment, driven by the html attribute so it is right on first paint. */
+  .persona-option {
+    border: 0;
+    border-bottom: 1px solid transparent;
+    background: transparent;
+    padding: 0.15rem 0 0.2rem;
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    font-weight: 500;
+    line-height: 1.3;
+    color: var(--color-muted);
+    cursor: pointer;
+  }
+
+  .persona-option:hover {
+    color: var(--color-fg);
+  }
+
+  /* Active choice, driven by the html attribute so it is right on first paint. */
   :global(html[data-persona='hiring']) [data-persona-option='hiring'],
   :global(html[data-persona='founder']) [data-persona-option='founder'],
   :global(html[data-persona='browsing']) [data-persona-option='browsing'] {
-    border-color: var(--color-accent);
-    background-color: var(--color-accent);
-    color: var(--color-accent-fg);
-    box-shadow: 0 0 0 4px color-mix(in oklab, var(--color-accent) 28%, transparent);
+    border-bottom-color: var(--color-accent);
+    color: var(--color-fg);
+    font-style: italic;
   }
 </style>
 

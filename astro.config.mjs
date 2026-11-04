@@ -44,6 +44,15 @@ export default defineConfig({
     },
     {
       provider: fontProviders.google(),
+      name: 'Newsreader',
+      cssVariable: '--font-newsreader',
+      weights: [500, 600],
+      styles: ['normal', 'italic'],
+      subsets: ['latin'],
+      fallbacks: ['Georgia', 'serif'],
+    },
+    {
+      provider: fontProviders.google(),
       name: 'JetBrains Mono',
       cssVariable: '--font-jbmono',
       weights: [400, 500],
