@@ -32,11 +32,11 @@ export const contact = {
   linkedinHandle: 'in/icicle29',
 } as const;
 
-export type Social = { label: string; href: string };
+export type Social = { label: string; href: string; icon: string };
 
 export const socials: Social[] = [
-  { label: 'LinkedIn', href: contact.linkedin },
-  { label: 'Email', href: `mailto:${contact.email}` },
+  { label: 'LinkedIn', href: contact.linkedin, icon: 'linkedin' },
+  { label: 'Email', href: `mailto:${contact.email}`, icon: 'mail' },
 ];
 
 /**
@@ -45,18 +45,22 @@ export const socials: Social[] = [
 export const services = [
   {
     title: 'Product from zero to launch',
+    icon: 'rocket',
     body: 'Scoping, architecture, build, and release. I take an idea to something real users log into, then keep it running.',
   },
   {
     title: 'Web platforms',
+    icon: 'globe',
     body: 'Next.js and Astro applications with real-time data, dashboards, payments, and admin tooling behind them.',
   },
   {
     title: 'Mobile apps',
+    icon: 'phone',
     body: 'Flutter apps for iOS and Android, including store submission, review cycles, and post-launch iteration.',
   },
   {
     title: 'Technical leadership',
+    icon: 'compass',
     body: 'Translating business goals into a roadmap engineers can build, and explaining the tradeoffs to everyone else.',
   },
 ] as const;
@@ -64,18 +68,22 @@ export const services = [
 export const skillGroups = [
   {
     label: 'Product & Web',
+    icon: 'layers',
     items: ['Next.js', 'React', 'Astro', 'TypeScript', 'Tailwind CSS'],
   },
   {
     label: 'Mobile',
+    icon: 'phone',
     items: ['Flutter', 'Dart', 'iOS & Play Store release'],
   },
   {
     label: 'Data & Infra',
+    icon: 'database',
     items: ['PostgreSQL', 'SQL & data analysis', 'Linux system administration', 'Vercel'],
   },
   {
     label: 'Product & Research',
+    icon: 'search',
     items: ['UI/UX analysis', 'User research', 'Policy analysis', 'Hiring & team building'],
   },
 ] as const;
@@ -120,7 +128,7 @@ export const experience: ExperienceEntry[] = [
     location: 'Dhaka, Bangladesh',
     track: 'work',
     summary:
-      'Led product for Flow, a business management SaaS, owning both the technical direction and the commercial case for what got built.',
+      'Led product for Flow, a business operations platform where attendance, leave, payroll, and approvals share one employee record, on the web and on iOS and Android.',
     project: 'flow-upturn',
   },
   {
@@ -190,10 +198,10 @@ export const certifications: Certification[] = [
 
 /** What is happening right now, for the home "Now" card. */
 export const now = [
-  { label: 'Building', text: 'BanglaBiz with Invest Bangladesh', href: '/about' },
-  { label: 'Teaching', text: "IELTS at Mentors'", href: '/about' },
-  { label: 'Studying', text: 'BBA at IBA, University of Dhaka', href: '/about' },
-  { label: 'Taking on', text: 'product, web, and mobile work', href: '/contact' },
+  { label: 'Building', icon: 'hammer', text: 'BanglaBiz with Invest Bangladesh', href: '/about' },
+  { label: 'Teaching', icon: 'school', text: "IELTS at Mentors'", href: '/about' },
+  { label: 'Studying', icon: 'book', text: 'BBA at IBA, University of Dhaka', href: '/about' },
+  { label: 'Taking on', icon: 'briefcase', text: 'product, web, and mobile work', href: '/contact' },
 ] as const;
 
 /**

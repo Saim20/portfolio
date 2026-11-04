@@ -1,6 +1,6 @@
 /**
  * The terminal panel, once the replay has finished (or been skipped), takes
- * real input. Commands navigate the site, open the easter egg, flip the theme,
+ * real input. Commands navigate the site, print the career log, flip the theme,
  * and feed the achievement system.
  *
  * All site data arrives as JSON embedded by TerminalHero.astro, so this module
@@ -20,6 +20,7 @@ type TerminalData = {
   ielts: string;
   projects: { slug: string; name: string; tagline: string; href: string | null }[];
   quests: { id: string; title: string; hint: string }[];
+  milestones: { hash: string; date: string; text: string }[];
 };
 
 type Ctx = {
@@ -168,9 +169,13 @@ const commands: Command[] = [
     help: 'career history, one line each',
     run: (args, ctx) => {
       if (args[0]?.toLowerCase() !== 'log') return ctx.print('usage: git log', 'error');
-      const open = (window as Window & { __openCareerLog?: () => void }).__openCareerLog;
-      if (open) open();
-      else ctx.print('career log unavailable here', 'error');
+      const entries = ctx.data.milestones ?? [];
+      if (!entries.length) return ctx.print('career log unavailable here', 'error');
+      ctx.print(`${entries.length} commits`, 'accent');
+      for (const entry of entries) {
+        ctx.print(`${entry.hash}  ${entry.date}  ${entry.text}`);
+      }
+      unlock('git-log');
     },
   },
   {
@@ -344,8 +349,22 @@ export function mountTerminal(terminal: HTMLElement) {
 
   const closeList = () => {
     listOpen = false;
-    if (suggest) suggest.hidden = true;
+    if (suggest) {
+      suggest.hidden = true;
+      suggest.style.maxHeight = '';
+    }
     input.removeAttribute('aria-activedescendant');
+  };
+
+  /** Keep the suggestion list directly under the prompt, scrolling the body if the list needs room. */
+  const fitSuggest = () => {
+    if (!suggest || suggest.hidden) return;
+    const room = Math.max(120, body.clientHeight - promptLine.offsetHeight - 16);
+    suggest.style.maxHeight = `${room}px`;
+    const listBottom = suggest.offsetTop + suggest.offsetHeight;
+    const viewBottom = body.scrollTop + body.clientHeight;
+    if (listBottom > viewBottom - 4) body.scrollTop += listBottom - viewBottom + 8;
+    if (promptLine.offsetTop < body.scrollTop) body.scrollTop = Math.max(0, promptLine.offsetTop - 4);
   };
 
   const paintSuggest = () => {
@@ -354,6 +373,7 @@ export function mountTerminal(terminal: HTMLElement) {
     if (!listOpen || currentSuggestions.length === 0) {
       suggest.hidden = true;
       suggest.replaceChildren();
+      suggest.style.maxHeight = '';
       input.removeAttribute('aria-activedescendant');
       return;
     }
@@ -378,9 +398,15 @@ export function mountTerminal(terminal: HTMLElement) {
         return button;
       }),
     );
-    const selected = suggest.querySelector('[aria-selected="true"]');
-    selected?.scrollIntoView({ block: 'nearest' });
+    const selected = suggest.querySelector<HTMLElement>('[aria-selected="true"]');
+    if (selected) {
+      const box = suggest.getBoundingClientRect();
+      const item = selected.getBoundingClientRect();
+      if (item.top < box.top) suggest.scrollTop -= box.top - item.top;
+      else if (item.bottom > box.bottom) suggest.scrollTop += item.bottom - box.bottom;
+    }
     input.setAttribute('aria-activedescendant', `terminal-opt-${highlighted}`);
+    requestAnimationFrame(fitSuggest);
   };
 
   const line = (text: string, tone: 'out' | 'accent' | 'error' = 'out') => {
@@ -549,8 +575,7 @@ export function mountTerminal(terminal: HTMLElement) {
           const button = document.createElement('button');
           button.type = 'button';
           button.dataset.terminalChip = label;
-          button.className =
-            'shrink-0 rounded border border-line bg-surface px-2 py-0.5 font-mono text-[0.65rem] text-muted transition-colors hover:border-accent hover:text-accent';
+          button.className = 'terminal-chip';
           button.textContent = label;
           return button;
         }),

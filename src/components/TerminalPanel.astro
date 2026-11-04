@@ -26,16 +26,16 @@ import Icon from './Icon.astro';
     class="terminal-panel"
   >
     <div class="terminal-panel-frame">
-      <header class="flex items-center justify-between gap-4">
-        <p id="terminal-panel-title" class="kicker text-fg">Terminal</p>
+      <div class="flex items-center justify-end">
+        <p id="terminal-panel-title" class="sr-only">Terminal</p>
         <button
           type="button"
           data-terminal-close
-          class="rounded-md px-3 py-2 text-sm text-muted transition-colors hover:text-fg"
+          class="rounded-md px-3 py-2 text-sm text-fg transition-colors hover:text-accent"
         >
           Close
         </button>
-      </header>
+      </div>
       <TerminalHero />
     </div>
   </div>
@@ -73,18 +73,6 @@ import Icon from './Icon.astro';
     min-height: 0;
   }
 
-  [data-terminal-panel] .terminal-window {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    min-height: 0;
-    box-shadow: none;
-  }
-
-  [data-terminal-panel] .terminal-window > :not(.terminal-body) {
-    flex-shrink: 0;
-  }
-
   [data-terminal-panel] [data-terminal] .terminal-body {
     flex: 1;
     height: auto;
@@ -95,14 +83,6 @@ import Icon from './Icon.astro';
 
   [data-terminal-panel] .terminal-input {
     font-size: 1rem;
-  }
-
-  /* The window fills the screen, so suggestions open upward over the output. */
-  [data-terminal-panel] [data-terminal] .terminal-suggest {
-    top: auto;
-    right: 0.75rem;
-    bottom: 3.25rem;
-    left: 0.75rem;
   }
 </style>
 

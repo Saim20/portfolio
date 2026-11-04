@@ -1,5 +1,5 @@
 ---
-import { Font, getImage } from 'astro:assets';
+import { Font } from 'astro:assets';
 import { ClientRouter } from 'astro:transitions';
 
 import '../styles/global.css';
@@ -11,9 +11,6 @@ import EasterEgg from '../components/EasterEgg.astro';
 import QuestHud from '../components/QuestHud.astro';
 import TerminalPanel from '../components/TerminalPanel.astro';
 import { site } from '../data/site';
-import portrait from '../assets/portrait.jpg';
-
-const wash = await getImage({ src: portrait, width: 960, quality: 42, format: 'webp' });
 
 interface Props {
   title: string;
@@ -28,12 +25,7 @@ const { title, description, graph, ogType, noindex, image } = Astro.props;
 ---
 
 <!doctype html>
-<html
-  lang={site.locale}
-  data-theme="light"
-  data-persona="hiring"
-  style={`--portrait-wash: url("${wash.src}")`}
->
+<html lang={site.locale} data-theme="light" data-persona="hiring">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />

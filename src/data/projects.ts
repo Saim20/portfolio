@@ -31,6 +31,11 @@ export type Project = {
   problem: string;
   approach: string[];
   highlights: { label: string; value: string }[];
+  /**
+   * Extra product screens on the case study, after the poster.
+   * `file` is a filename in src/assets/projects/gallery/.
+   */
+  gallery?: { file: string; alt: string; caption: string }[];
   /** Rendered verbatim into /llms.txt and the meta description. */
   summary: string;
   /**
@@ -52,7 +57,7 @@ export const projects: Project[] = [
     slug: 'tathirmichil',
     name: 'Tathirmichil',
     tagline:
-      'An admissions prep platform where students sit timed mock tests and see exactly where they stand.',
+      'Admissions prep for IBA and the exams around it, where a student sits a real paper and sees exactly where they stand.',
     category: 'Web platform',
     role: 'Architect & Full-stack Engineer',
     period: '2024 - present',
@@ -64,21 +69,43 @@ export const projects: Project[] = [
       { label: 'Visit tathirmichil.com', href: 'https://www.tathirmichil.com', primary: true },
     ],
     problem:
-      'IBA admission candidates were stitching together SAT, GRE, and GMAT books, scattered PDFs, and group chats. The instructor behind Michil - Tathir Mohtadi Chowdhury, Rank 1 of the 31st batch - needed one place to run a whole preparation season: teach, test, rank, and keep a full batch of students motivated at the same time.',
+      'Candidates for IBA, and for BUP, JU IBA, and Dhaka University B and C unit, were stitching together SAT, GRE, and GMAT books, scattered PDFs, and group chats. The instructor behind Michil - Tathir Mohtadi Chowdhury, Rank 1 of the 31st batch - needed one place to run a whole preparation season: teach, test, rank, and keep a full batch of students motivated at the same time.',
     approach: [
-      'Built a full assessment engine: timed 90-minute mock tests modelled on real question papers, with per-section and per-topic scoring.',
-      'Turned raw attempts into analytics students act on - accuracy, time management, strengths and weaknesses, and a median comparison against everyone else who sat the same test.',
-      'Added a coin and leaderboard economy so daily practice feels like a game instead of homework, which is what students quote most in their testimonials.',
-      'Shipped an admin surface for the instructor: authoring questions, publishing tests and results, running batches, and posting announcements without a developer in the loop.',
-      'Moved heavy result publishing and challenge scoring into a background worker so the app stays responsive when an entire batch submits at once.',
+      'Built one exam engine for several ways of sitting a paper: free assessments, topic practice, scheduled live tests, real-time challenge rooms, and an offline mock circuit run at centres.',
+      'Turned each attempt into something a student can act on - score, accuracy, time per question, a breakdown by section and topic, negative marking, and a drill built from the questions they missed.',
+      'Added a coin and leaderboard economy on top of bKash subscriptions, so practice, class materials, and the paid batch live in the same account.',
+      'Shipped a staff console that can author and publish at that volume: the question bank, test scheduling, batches, and announcements, without a developer in the loop.',
+      'Moved result publishing and challenge-room phases into a background worker. The browser is not the source of truth for when a round starts or ends, and a full batch submitting at once does not take the app down.',
     ],
     highlights: [
-      { label: 'Free assessment test', value: '90-minute diagnostic modelled on real papers' },
-      { label: 'Analytics', value: 'Per-topic breakdown and median comparison' },
-      { label: 'Retention', value: 'Coins, leaderboards, and live batch community' },
+      { label: 'Accounts', value: 'About 11,900 as of 1 Nov 2026' },
+      { label: 'Tests submitted', value: 'About 82,500 on that snapshot' },
+      { label: 'Question bank', value: 'About 48,000 items' },
+    ],
+    gallery: [
+      {
+        file: 'tathirmichil-admin.webp',
+        alt: 'Admin dashboard with account, subscription, and test totals',
+        caption: 'Staff home on 1 Nov 2026: accounts, subscriptions, and tests submitted.',
+      },
+      {
+        file: 'tathirmichil-tests.webp',
+        alt: 'Practice catalog with assessment, practice, live, and challenge modes',
+        caption: 'One test area: assessments, topic practice, live papers, and challenge rooms.',
+      },
+      {
+        file: 'tathirmichil-results.webp',
+        alt: 'Practice test result with attempt, accuracy, and time per question',
+        caption: 'A result breaks the paper into attempted, correct, accuracy, and time.',
+      },
+      {
+        file: 'tathirmichil-leaderboard.webp',
+        alt: 'Coin leaderboard filtered by batch, with ranks shown as Student N',
+        caption: 'Michilcoins, ranked by batch, with daily and weekly movement.',
+      },
     ],
     summary:
-      'Tathirmichil is an IBA admission preparation platform: timed mock tests, per-topic analytics, median comparison, a coin and leaderboard system, an instructor admin panel, and a live batch community. Built with Next.js, TypeScript, Supabase, and Firebase on Vercel.',
+      'Tathirmichil is a multi-program admissions platform for University of Dhaka IBA and sibling exams (BUP, JU IBA, DU B and C unit). Students sit assessments, topic practice, live tests, and real-time challenge rooms, then see per-topic analytics, and a coin leaderboard sits on top of bKash subscriptions. Staff author questions, tests, and batches from the same site. On 1 November 2026 it had about 11,900 accounts, 82,500 tests submitted, and 48,000 questions in the bank. Built with Next.js, TypeScript, Supabase, and Firebase on Vercel.',
     commentary:
       'The first result-publishing run was synchronous. A full batch submitted a mock within the same minute and the request timed out halfway through scoring. That night is why there is a background worker now - and why I never ship a "publish to everyone" button without a queue behind it.',
   },
@@ -93,27 +120,43 @@ export const projects: Project[] = [
     live: true,
     featured: true,
     accent: '#60a5fa',
-    stack: ['Next.js', 'TypeScript', 'Multi-tenant SaaS', 'Role-based access'],
+    stack: ['Next.js', 'TypeScript', 'Supabase', 'Tailwind CSS', 'Capacitor'],
     links: [
       { label: 'Visit flow.upturn.com.bd', href: 'https://flow.upturn.com.bd', primary: true },
     ],
     problem:
       'Small and mid-sized companies in Bangladesh run operations across WhatsApp, paper forms, and a pile of spreadsheets. Attendance lives in one place, payroll in another, client work in a third, and nobody trusts the numbers at month end. Flow set out to replace that whole stack for teams of 10 to 50.',
     approach: [
-      'Owned the product end to end as Head of Product: what shipped, in what order, and why it was worth building.',
-      'Scoped and shipped integrated modules rather than isolated tools - task and project tracking, process automation, HRIS, attendance, leave, and payroll all reading the same employee record.',
-      'Built employee-facing services that remove admin back-and-forth: notices, requisitions, expense settlements, and complaints, each with its own approval trail.',
-      'Modelled onboarding and offboarding as repeatable workflows, so a new hire or an exit is a checklist the system runs rather than something a manager remembers.',
-      'Extended the platform outward with stakeholder management: custom processes per client or vendor, a public ticket submission portal, and per-stakeholder billing and transactions.',
-      'Shaped commercial packaging alongside the product - tiered plans by team size plus a per-stakeholder add-on.',
+      'Led the product as Head of Product, and shipped modules that share one employee record: tasks, projects, attendance, leave, and payroll.',
+      'Put every approval in one inbox - leave, attendance corrections, requisitions, expense settlements, and complaints - instead of a separate trail per form.',
+      'Geofenced attendance to company sites, and required admin approval before a new device could sign in.',
+      'Extended the same system to clients and vendors: configurable sales processes, invoicing, and a public ticket portal.',
+      'Shipped it as a web app, an installable PWA, and Capacitor shells for iOS and Android.',
     ],
     highlights: [
-      { label: 'Scope', value: '17 modules across ops, HR, and finance' },
-      { label: 'Access control', value: 'Team-based granular permissions' },
-      { label: 'Pricing', value: 'Three tiers plus stakeholder add-on' },
+      { label: 'Shared record', value: 'Tasks, attendance, leave, and payroll on one employee' },
+      { label: 'Approvals', value: 'One inbox for every request waiting on you' },
+      { label: 'Clients', value: 'Web app, installable PWA, and iOS and Android shells' },
+    ],
+    gallery: [
+      {
+        file: 'flow-search.webp',
+        alt: 'Command palette listing operations modules such as tasks, attendance, and leave',
+        caption: 'Ctrl+K jumps across operations, settings, and in-app tutorials.',
+      },
+      {
+        file: 'flow-timeline.webp',
+        alt: 'Project milestone timeline with completed bars and duration totals',
+        caption: 'Projects track milestones on a timeline, with weight and status.',
+      },
+      {
+        file: 'flow-process.webp',
+        alt: 'Ordered steps of a configurable stakeholder sales process',
+        caption: 'Stakeholder work is a process the company defines, step by step.',
+      },
     ],
     summary:
-      'Flow is a business operations platform by Upturn combining workflow automation, HR (HRIS, attendance, leave, payroll), employee services, onboarding and offboarding, stakeholder management, and financial transactions in one system. Saimul Islam led it as Head of Product from November 2023 to March 2026.',
+      'Flow is a multi-tenant operations platform by Upturn. Tasks, projects, geofenced attendance, leave, and payroll share one employee record, and managers clear leave, corrections, requisitions, settlements, and complaints from a single inbox. Stakeholder processes, invoicing, and a public ticket portal sit on the same system, which runs as a web app, an installable PWA, and iOS and Android shells. Saimul Islam led it as Head of Product from November 2023 to March 2026.',
     commentary:
       'Seventeen modules is too many to launch with. Looking back, I would have shipped attendance, leave, and payroll first, charged for them, and let paying customers pull the rest out of us. We built breadth before we had earned it, and the sales conversations got easier only once we started leading with the three modules every company actually asked about.',
   },
@@ -182,6 +225,13 @@ export const projects: Project[] = [
 export const featuredProjects = projects.filter((p) => p.featured);
 
 export const projectCategories = [...new Set(projects.map((p) => p.category))];
+
+/** Small stroke mark for a work category. Names match Icon.astro. */
+export const categoryIcons = {
+  'Web platform': 'globe',
+  'Mobile app': 'phone',
+  SaaS: 'briefcase',
+} as const satisfies Record<Project['category'], string>;
 
 export function getProject(slug: string): Project | undefined {
   return projects.find((p) => p.slug === slug);

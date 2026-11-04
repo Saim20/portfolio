@@ -1,9 +1,13 @@
 ---
 import type { GetStaticPaths } from 'astro';
 
+import { Image } from 'astro:assets';
+
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProjectPoster from '../../components/ProjectPoster.astro';
-import { projects } from '../../data/projects';
+import Icon from '../../components/Icon.astro';
+import { projects, categoryIcons } from '../../data/projects';
+import { getGalleryImage } from '../../lib/screenshots';
 import { buildGraph, breadcrumbNode, projectNode } from '../../lib/seo';
 
 export const getStaticPaths = (() =>
@@ -13,6 +17,10 @@ export const getStaticPaths = (() =>
   }))) satisfies GetStaticPaths;
 
 const { project } = Astro.props;
+const gallery = (project.gallery ?? []).map((shot) => ({
+  ...shot,
+  image: getGalleryImage(shot.file),
+}));
 
 const graph = buildGraph([
   breadcrumbNode([
@@ -45,7 +53,10 @@ const others = projects.filter((entry) => entry.slug !== project.slug).slice(0, 
 
     <header class="mt-8 max-w-3xl">
       <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-sm text-muted">
-        <span class="kicker text-accent">{project.category}</span>
+        <span class="inline-flex items-center gap-2">
+          <Icon name={categoryIcons[project.category]} class="size-4 text-accent" />
+          <span class="kicker text-accent">{project.category}</span>
+        </span>
         <span aria-hidden="true">/</span>
         <span>{project.role}</span>
         <span aria-hidden="true">/</span>
@@ -109,6 +120,34 @@ const others = projects.filter((entry) => entry.slug !== project.slug).slice(0, 
         ))
       }
     </dl>
+
+    {
+      gallery.length > 0 && (
+        <section aria-label="Product screens" class="mt-14">
+          <h2 class="kicker text-muted">In the product</h2>
+          <ul class="mt-6 grid gap-8 sm:grid-cols-2">
+            {gallery.map((shot) => (
+              <li>
+                <figure>
+                  <div class="overflow-hidden rounded-lg border border-line bg-surface-2">
+                    <Image
+                      src={shot.image}
+                      alt={shot.alt}
+                      widths={[640, 960, 1280]}
+                      sizes="(min-width: 640px) 32rem, 100vw"
+                      loading="lazy"
+                      decoding="async"
+                      class="h-auto w-full"
+                    />
+                  </div>
+                  <figcaption class="mt-3 text-sm text-muted text-pretty">{shot.caption}</figcaption>
+                </figure>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
 
     <div class="mt-14 grid gap-12 lg:grid-cols-[1fr_16rem] lg:gap-16">
       <div class="max-w-2xl">

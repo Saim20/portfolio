@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
 import {
   site,
   contact,
@@ -42,9 +43,10 @@ const projectBySlug = new Map(projects.map((project) => [project.slug, project])
       <p>
         I am <strong class="font-medium text-fg">SM Saimul Islam</strong>, a product lead and
         full-stack engineer based in {site.location.city}, {site.location.country}. I spent two and
-        a half years as Head of Product at Upturn building Flow, a business operations SaaS, and
-        before that led the technical side of StuDays, a student discount app now live on both the
-        App Store and Google Play.
+        a half years as Head of Product at Upturn building Flow, a business operations SaaS, and I
+        architect Tathirmichil, a live admissions platform for IBA, BUP, and other Dhaka University
+        units. Before that I led the technical side of StuDays, a student discount app now live on
+        both the App Store and Google Play.
       </p>
       <p>
         Since October 2026 I have been a Project Associate at Invest Bangladesh, working part-time
@@ -143,7 +145,10 @@ const projectBySlug = new Map(projects.map((project) => [project.slug, project])
 
     <div class="mt-10 grid gap-10 sm:grid-cols-2">
       <div>
-        <h3 class="kicker text-muted">Education</h3>
+        <h3 class="flex items-center gap-2">
+          <Icon name="school" class="size-4 shrink-0 text-accent" />
+          <span class="kicker text-muted">Education</span>
+        </h3>
         <ul class="mt-4 space-y-4">
           {
             education.map((entry) => (
@@ -160,7 +165,10 @@ const projectBySlug = new Map(projects.map((project) => [project.slug, project])
       </div>
 
       <div>
-        <h3 class="kicker text-muted">Certifications</h3>
+        <h3 class="flex items-center gap-2">
+          <Icon name="award" class="size-4 shrink-0 text-warm" />
+          <span class="kicker text-muted">Certifications</span>
+        </h3>
         <ul class="mt-4 space-y-3">
           {
             certifications.map((cert) => (
@@ -181,7 +189,10 @@ const projectBySlug = new Map(projects.map((project) => [project.slug, project])
       {
         skillGroups.map((group) => (
           <div>
-            <h3 class="kicker text-muted">{group.label}</h3>
+            <h3 class="flex items-center gap-2">
+              <Icon name={group.icon} class="size-4 shrink-0 text-accent" />
+              <span class="kicker text-muted">{group.label}</span>
+            </h3>
             <ul class="mt-4 space-y-2 text-sm text-fg-soft">
               {group.items.map((item) => (
                 <li>{item}</li>

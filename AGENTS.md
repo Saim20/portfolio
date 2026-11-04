@@ -5,12 +5,12 @@ The site should feel like a person and a place, not a product landing page. The 
 - Headings and the `.kicker` label use Newsreader. Body and UI stay Inter. JetBrains Mono stays inside the terminal.
 - Color tokens live in `src/styles/global.css`. Change the palette there.
 - Prefer type, rules, and the photograph over bordered cards, icon tiles, stat chips, and mono uppercase kickers.
-- The portrait is a masked bleed (top band on a phone, right edge on a wide screen) plus a faint page wash. Keep the face in frame. Do not crop it into a circle or put it back in a frame. Serve it through `astro:assets`, not as a raw file in `public/`.
+- The portrait is a soft circle in the hero. The face is centered and zoomed in slightly. The middle of the circle is translucent, with a short fade at the rim. The page background is a color gradient, not a blurred copy of the photo. Serve the portrait through `astro:assets`, not as a raw file in `public/`.
 - On a phone, hero actions must stay clear of the terminal button and the explorer pill.
 
 ## Terminal
 
-The terminal is not part of the homepage. `src/components/TerminalPanel.astro` is mounted from the layout: a button on the right edge, just above the docked explorer pill, opens a full-screen dialog. The typing replay starts the first time it opens.
+The terminal is not part of the homepage. `src/components/TerminalPanel.astro` is mounted from the layout: a button on the right edge opens a full-screen dialog. The explorer control is an icon in that same bar, the same height as the terminal button. The typing replay starts the first time it opens. `git log` prints inside the terminal. Suggestions sit under the prompt.
 
 Do not put `data-terminal-open` on `<html>`. That attribute is the button. The open state is `data-terminal-active`. Copy that mentions the terminal (the browsing persona and the terminal quest hint) should point at the side button.
 

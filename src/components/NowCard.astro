@@ -1,5 +1,6 @@
 ---
 import { now } from '../data/site';
+import Icon from './Icon.astro';
 
 interface Props {
   class?: string;
@@ -13,8 +14,14 @@ const { class: className = '' } = Astro.props;
   <dl class="mt-5 grid gap-x-10 gap-y-5 sm:grid-cols-2">
     {
       now.map((item) => (
-        <div>
-          <dt class="text-sm text-warm">{item.label}</dt>
+        <div class="group">
+          <dt class="flex items-center gap-2 text-sm text-warm">
+            <Icon
+              name={item.icon}
+              class="size-4 shrink-0 text-accent transition-transform duration-300 group-hover:-translate-y-0.5"
+            />
+            {item.label}
+          </dt>
           <dd class="mt-1 text-sm text-fg-soft">
             <a
               href={item.href}

@@ -1,7 +1,8 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
-import { projects, projectCategories } from '../../data/projects';
+import Icon from '../../components/Icon.astro';
+import { projects, projectCategories, categoryIcons } from '../../data/projects';
 import { buildGraph, breadcrumbNode, itemListNode, projectNode } from '../../lib/seo';
 
 const graph = buildGraph([
@@ -15,11 +16,12 @@ const graph = buildGraph([
 
 const slug = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 const filters = [
-  { id: 'all', label: 'Everything', category: null },
+  { id: 'all', label: 'Everything', category: null, icon: 'layers' },
   ...projectCategories.map((category) => ({
     id: slug(category),
     label: category,
     category,
+    icon: categoryIcons[category],
   })),
 ];
 
@@ -68,8 +70,9 @@ const filterCss = filters
               />
               <label
                 for={`filter-${filter.id}`}
-                class="block cursor-pointer rounded-full border border-line px-4 py-1.5 text-sm text-fg-soft transition-colors hover:border-accent/60 peer-checked:border-accent peer-checked:bg-accent-soft/30 peer-checked:text-accent peer-focus-visible:outline-2 peer-focus-visible:outline-offset-3 peer-focus-visible:outline-accent"
+                class="flex cursor-pointer items-center gap-1.5 rounded-full border border-line px-4 py-1.5 text-sm text-fg-soft transition-colors hover:border-accent/60 peer-checked:border-accent peer-checked:bg-accent-soft/30 peer-checked:text-accent peer-focus-visible:outline-2 peer-focus-visible:outline-offset-3 peer-focus-visible:outline-accent"
               >
+                <Icon name={filter.icon} class="size-3.5" />
                 {filter.label}
               </label>
             </div>

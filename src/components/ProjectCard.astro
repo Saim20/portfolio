@@ -1,6 +1,8 @@
 ---
 import type { Project } from '../data/projects';
+import { categoryIcons } from '../data/projects';
 import ProjectPoster from './ProjectPoster.astro';
+import Icon from './Icon.astro';
 
 interface Props {
   project: Project;
@@ -18,7 +20,10 @@ const caseStudy = `/work/${project.slug}`;
 
   <div class="flex flex-col gap-3">
     <div class="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[0.7rem] uppercase tracking-[0.14em] text-muted">
-      <span>{project.category}</span>
+      <span class="inline-flex items-center gap-1.5 normal-case tracking-normal">
+        <Icon name={categoryIcons[project.category]} class="size-3.5 text-accent" />
+        <span class="uppercase tracking-[0.14em]">{project.category}</span>
+      </span>
       <span aria-hidden="true">/</span>
       <span>{project.role}</span>
     </div>

@@ -164,26 +164,40 @@ html[data-persona="browsing"] [data-home-sections] > #stack {
   }
 }
 
-/* Faint portrait wash on every page, so inner pages are not a flat fill. */
+/* Color wash on every page. A gradient, not a blurred copy of the portrait. */
 .page-wash {
   position: fixed;
   z-index: -1;
-  inset: -8%;
+  inset: 0;
   pointer-events: none;
-  background-image: var(--portrait-wash);
-  background-size: cover;
-  background-position: center 22%;
-  filter: blur(16px) saturate(0.72);
-  opacity: 0.16;
-  mask-image: linear-gradient(to bottom, #000 0%, transparent 82%);
+  background:
+    radial-gradient(
+      62rem 36rem at 82% -8%,
+      color-mix(in oklab, var(--color-accent) 20%, transparent),
+      transparent 62%
+    ),
+    radial-gradient(
+      42rem 28rem at 8% 18%,
+      color-mix(in oklab, var(--color-warm) 14%, transparent),
+      transparent 58%
+    );
 }
 
 :root[data-theme="dark"] .page-wash {
-  opacity: 0.22;
-  filter: blur(18px) saturate(0.55) brightness(0.45);
+  background:
+    radial-gradient(
+      62rem 36rem at 82% -8%,
+      color-mix(in oklab, var(--color-accent) 16%, transparent),
+      transparent 64%
+    ),
+    radial-gradient(
+      42rem 28rem at 8% 18%,
+      color-mix(in oklab, var(--color-warm) 10%, transparent),
+      transparent 60%
+    );
 }
 
-/* Homepage portrait. The sharp photo and a softer wash share this section. */
+/* Homepage portrait. A soft circle, faded on every side, over a color wash. */
 .hero {
   position: relative;
   isolation: isolate;
@@ -192,115 +206,141 @@ html[data-persona="browsing"] [data-home-sections] > #stack {
 .hero-wash {
   position: absolute;
   z-index: 0;
-  inset: -1.5rem 0 0;
+  inset: 0;
   pointer-events: none;
-  background-image: var(--portrait-wash);
-  background-size: cover;
-  background-position: 72% 18%;
-  filter: blur(32px) saturate(0.7);
-  opacity: 0.4;
-  mask-image: linear-gradient(to bottom, #000 0%, #000 22%, transparent 76%);
+  background:
+    radial-gradient(
+      36rem 28rem at 72% 42%,
+      color-mix(in oklab, var(--color-accent) 26%, transparent),
+      transparent 68%
+    ),
+    radial-gradient(
+      24rem 18rem at 18% 78%,
+      color-mix(in oklab, var(--color-warm) 16%, transparent),
+      transparent 64%
+    );
+  mask-image: linear-gradient(to bottom, #000 0%, transparent 88%);
 }
 
 :root[data-theme="dark"] .hero-wash {
-  opacity: 0.34;
-  filter: blur(34px) saturate(0.5) brightness(0.5);
+  background:
+    radial-gradient(
+      36rem 28rem at 72% 42%,
+      color-mix(in oklab, var(--color-accent) 18%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      24rem 18rem at 18% 78%,
+      color-mix(in oklab, var(--color-warm) 12%, transparent),
+      transparent 66%
+    );
 }
 
 .hero-portrait {
   position: relative;
   z-index: 0;
-  height: calc(46svh + 3.5rem);
-  margin-top: -3.5rem;
+  width: min(78vw, 22rem);
+  aspect-ratio: 1;
+  height: auto;
+  margin: 0.75rem auto 0;
   overflow: hidden;
-  mask-image: linear-gradient(to bottom, #000 40%, transparent 100%);
+  border-radius: 50%;
+  /* Fade runs from the rim inward. The face at the center stays translucent. */
+  mask-image: radial-gradient(
+    circle,
+    rgb(0 0 0 / 1) 45%,
+    rgb(0 0 0 / 0) 70%,
+    transparent 100%
+  );
+  -webkit-mask-image: radial-gradient(
+    circle,
+    rgb(0 0 0 / 1) 45%,
+    rgb(0 0 0 / 0) 70%,
+    transparent 100%
+  );
 }
 
 .hero-portrait-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 50% 24%;
+  position: absolute;
+  width: 150%;
+  height: auto;
+  max-width: none;
+  left: -29%;
+  top: -25%;
 }
 
 :root[data-theme="dark"] .hero-portrait-img {
-  filter: saturate(0.8) brightness(0.72);
+  filter: saturate(0.8) brightness(0.90);
 }
 
 .hero-copy {
   position: relative;
   z-index: 1;
-  margin-top: -16svh;
+  margin-top: -2.5rem;
   padding-bottom: 0.5rem;
-  background: linear-gradient(
-    to bottom,
-    transparent 0,
-    color-mix(in oklab, var(--color-bg) 84%, transparent) 1rem,
-    var(--color-bg) 5rem
-  );
 }
 
-/* Short phones: a shorter photo so the actions clear the floating controls. */
+/* Short phones: a smaller circle and tighter type so the actions clear the floating controls. */
 @media (width < 64rem) and (height <= 740px) {
   .hero-portrait {
-    height: calc(34svh + 3.5rem);
+    width: min(44vw, 12rem);
+  }
+
+  .hero-copy {
+    margin-top: -0.75rem;
+  }
+
+  .hero-copy h1,
+  .hero-copy > p {
+    margin-top: 0.65rem;
+  }
+
+  .hero-copy > div:last-child {
+    margin-top: 0.85rem;
   }
 }
 
 @media (width >= 64rem) {
   .hero {
-    min-height: min(44rem, 86vh);
+    min-height: min(40rem, 82vh);
   }
 
   .hero-portrait {
     position: absolute;
-    inset: 0 0 0 auto;
-    width: min(58vw, 52rem);
-    height: auto;
-    mask-image: linear-gradient(to right, transparent 0%, #000 32%),
-      linear-gradient(to bottom, #000 62%, transparent 100%);
-    mask-composite: intersect;
-    -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 32%),
-      linear-gradient(to bottom, #000 62%, transparent 100%);
-    -webkit-mask-composite: source-in;
-  }
-
-  .hero {
-    margin-top: 0;
-  }
-
-  .hero-portrait {
-    margin-top: 0;
-    height: auto;
+    top: 50%;
+    right: max(2rem, calc((100vw - 68rem) / 2));
+    width: min(32rem, 40vw);
+    margin: 0;
+    translate: 0 -46%;
   }
 
   .hero-copy {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    width: min(34rem, 46%);
-    min-height: min(40rem, 78vh);
+    width: min(34rem, 48%);
+    min-height: min(36rem, 74vh);
     margin-top: 0;
     padding-top: 1.5rem;
     padding-bottom: 2.5rem;
-    background: none;
   }
 }
 
-/* Opens the full-screen terminal. Sits just above the docked explorer pill. */
+/* Terminal and the docked explorer share one bar on the right edge. */
 .terminal-launcher {
   position: fixed;
-  z-index: 85;
+  z-index: 90;
   right: 0;
-  bottom: calc(max(1rem, env(safe-area-inset-bottom, 0px)) + 4.5rem);
+  bottom: max(1rem, env(safe-area-inset-bottom, 0px));
   display: grid;
   width: 2.75rem;
   height: 2.75rem;
   place-items: center;
   border: 1px solid var(--color-line);
   border-right: 0;
-  border-radius: 999px 0 0 999px;
-  background: color-mix(in oklab, var(--color-bg) 84%, transparent);
+  border-left: 0;
+  border-radius: 0;
+  background: color-mix(in oklab, var(--color-bg) 88%, transparent);
   color: var(--color-fg);
   backdrop-filter: blur(10px);
 }

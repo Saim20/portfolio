@@ -1,6 +1,7 @@
 ---
 import { site, contact, socials } from '../data/site';
 import LocalTime from './LocalTime.astro';
+import Icon from './Icon.astro';
 
 const year = new Date().getFullYear();
 ---
@@ -15,22 +16,24 @@ const year = new Date().getFullYear();
 
     <div class="flex flex-col gap-3 text-sm">
       <a
-        class="break-all text-fg-soft transition-colors hover:text-accent"
+        class="inline-flex items-center gap-2 break-all text-fg-soft transition-colors hover:text-accent"
         href={`mailto:${contact.email}`}
         data-quest="ready-to-talk"
       >
+        <Icon name="mail" class="size-4 shrink-0" />
         {contact.email}
       </a>
       {
         socials.map((social) =>
           social.href.startsWith('mailto:') ? null : (
             <a
-              class="text-fg-soft transition-colors hover:text-accent"
+              class="inline-flex items-center gap-2 text-fg-soft transition-colors hover:text-accent"
               href={social.href}
               rel="me noopener"
               target="_blank"
               data-quest="ready-to-talk"
             >
+              <Icon name={social.icon} class="size-4 shrink-0" />
               {social.label}
             </a>
           ),

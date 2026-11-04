@@ -16,8 +16,19 @@ const files = import.meta.glob<{ default: ImageMetadata }>(
   { eager: true },
 );
 
+/** Caption-bearing frames for case studies. Filenames match Project.gallery. */
+const galleryFiles = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/projects/gallery/*.{png,jpg,jpeg,webp,avif}',
+  { eager: true },
+);
+
 const bySlug = new Map<string, ImageMetadata>();
 const screensBySlug = new Map<string, { index: number; image: ImageMetadata }[]>();
+const galleryByFile = new Map<string, ImageMetadata>();
+
+for (const [path, mod] of Object.entries(galleryFiles)) {
+  galleryByFile.set(path.split('/').pop()!, mod.default);
+}
 
 for (const [path, mod] of Object.entries(files)) {
   const name = path.split('/').pop()!.replace(/\.[^.]+$/, '');
@@ -34,6 +45,13 @@ for (const [path, mod] of Object.entries(files)) {
 
 export function getScreenshot(slug: string): ImageMetadata | undefined {
   return bySlug.get(slug);
+}
+
+/** A case-study gallery frame. Throws if the file was listed but not exported. */
+export function getGalleryImage(file: string): ImageMetadata {
+  const image = galleryByFile.get(file);
+  if (!image) throw new Error(`Missing gallery image: ${file}`);
+  return image;
 }
 
 /** Numbered screens for a slug, sorted ascending. Empty when none exist. */

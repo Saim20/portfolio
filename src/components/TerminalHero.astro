@@ -1,5 +1,5 @@
 ---
-import { site, contact, certifications, skillGroups } from '../data/site';
+import { site, contact, certifications, skillGroups, milestones } from '../data/site';
 import { projects } from '../data/projects';
 import { quests } from '../data/quests';
 
@@ -40,30 +40,22 @@ const payload = {
     href: p.links[0]?.href ?? null,
   })),
   quests: quests.map((q) => ({ id: q.id, title: q.title, hint: q.hint })),
+  milestones: milestones.map((entry) => ({ hash: entry.hash, date: entry.date, text: entry.text })),
 };
 ---
 
-<div class="relative" data-terminal>
-  <div class="terminal-window overflow-hidden rounded-xl border border-line bg-surface shadow-2xl shadow-black/20">
-  <div class="flex min-w-0 items-center gap-2 border-b border-line bg-surface-2 px-3 py-2 sm:gap-3 sm:px-4 sm:py-2.5">
-    <span class="flex shrink-0 gap-1.5" aria-hidden="true">
-      <span class="size-2.5 rounded-full bg-[#ff5f57]"></span>
-      <span class="size-2.5 rounded-full bg-[#febc2e]"></span>
-      <span class="size-2.5 rounded-full bg-[#28c840]"></span>
-    </span>
-    <span class="min-w-0 truncate font-mono text-[0.65rem] text-muted sm:text-xs">saim@dhaka - zsh</span>
-    <button
-      type="button"
-      data-terminal-skip
-      hidden
-      class="ml-auto shrink-0 rounded font-mono text-xs text-muted transition-colors hover:text-accent"
-    >
-      skip
-    </button>
-  </div>
+<div class="relative flex min-h-0 flex-1 flex-col" data-terminal>
+  <button
+    type="button"
+    data-terminal-skip
+    hidden
+    class="terminal-skip"
+  >
+    skip
+  </button>
 
   <div
-    class="terminal-body overflow-x-hidden overflow-y-auto px-3 py-3 font-mono text-[0.72rem] leading-snug sm:px-4 sm:py-3.5 sm:text-[0.8rem]"
+    class="terminal-body overflow-x-hidden overflow-y-auto px-1 py-2 font-mono text-[0.72rem] leading-snug sm:py-3 sm:text-[0.8rem]"
   >
     <code class="terminal-code">
       {
@@ -103,26 +95,25 @@ const payload = {
         />
       </span>
     </code>
+    <div
+      id="terminal-suggestions"
+      data-terminal-suggest
+      hidden
+      role="listbox"
+      aria-label="Command suggestions"
+      class="terminal-suggest"
+    ></div>
   </div>
 
   <div
     data-terminal-chips
     hidden
-    class="flex flex-wrap gap-1.5 border-t border-line/70 px-3 py-2 sm:px-4"
+    class="terminal-chips"
     aria-label="All commands"
   >
   </div>
 
   <script is:inline type="application/json" data-terminal-data set:html={JSON.stringify(payload)} />
-  </div>
-  <div
-    id="terminal-suggestions"
-    data-terminal-suggest
-    hidden
-    role="listbox"
-    aria-label="Command suggestions"
-    class="terminal-suggest"
-  ></div>
 </div>
 
 <!-- Global on purpose: terminal.ts creates .terminal-line nodes at runtime, which
@@ -149,28 +140,38 @@ const payload = {
     scrollbar-width: thin;
   }
 
-  [data-terminal] .terminal-suggest {
+  [data-terminal] .terminal-skip {
     position: absolute;
-    z-index: 40;
-    top: calc(100% + 0.4rem);
+    z-index: 2;
+    top: 0.25rem;
     right: 0;
-    left: 0;
-    max-height: 14rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--color-fg-soft);
+  }
+
+  [data-terminal] .terminal-skip:hover {
+    color: var(--color-accent);
+  }
+
+  [data-terminal] .terminal-suggest {
+    margin-top: 0.35rem;
+    max-height: 40vh;
     overflow: auto;
     border: 1px solid var(--color-line);
     border-radius: 0.6rem;
     background: var(--color-surface);
-    box-shadow: 0 16px 36px -18px rgb(0 0 0 / 0.45);
     scrollbar-width: thin;
   }
 
   [data-terminal] .terminal-suggest button {
     display: block;
     width: 100%;
-    padding: 0.3rem 0.6rem;
+    padding: 0.55rem 0.75rem;
     text-align: left;
     font: inherit;
-    color: var(--color-fg-soft);
+    font-size: 0.95rem;
+    color: var(--color-fg);
     background: transparent;
     border: 0;
     cursor: pointer;
@@ -178,6 +179,30 @@ const payload = {
 
   [data-terminal] .terminal-suggest button[aria-selected='true'] {
     background: color-mix(in oklab, var(--color-accent) 16%, transparent);
+    color: var(--color-accent);
+  }
+
+  [data-terminal] .terminal-chips:not([hidden]) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding-top: 0.85rem;
+  }
+
+  [data-terminal] [data-terminal-chip] {
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    background: var(--color-surface);
+    padding: 0.6rem 0.95rem;
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    line-height: 1.1;
+    color: var(--color-fg);
+    cursor: pointer;
+  }
+
+  [data-terminal] [data-terminal-chip]:hover {
+    border-color: var(--color-accent);
     color: var(--color-accent);
   }
 
