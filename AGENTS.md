@@ -5,7 +5,7 @@ The site should feel like a person and a place, not a product landing page. The 
 - Headings and the `.kicker` label use Newsreader. Body and UI stay Inter. JetBrains Mono stays inside the terminal.
 - Color tokens live in `src/styles/global.css`. Change the palette there.
 - Prefer type, rules, and the photograph over bordered cards, icon tiles, stat chips, and mono uppercase kickers.
-- The portrait is a soft circle in the hero. The face is centered and zoomed in slightly. The middle of the circle is translucent, with a short fade at the rim. The page background is a color gradient, not a blurred copy of the photo. Serve the portrait through `astro:assets`, not as a raw file in `public/`.
+- On a phone, the portrait is a full-width banner with a fade only along the bottom edge. From the desktop breakpoint up it is a soft circle: the face is centered and zoomed in slightly, and the middle stays translucent with a short fade at the rim. The page background is a color gradient, not a blurred copy of the photo. Serve the portrait through `astro:assets`, not as a raw file in `public/`.
 - On a phone, hero actions must stay clear of the terminal button and the explorer pill.
 
 ## Terminal
