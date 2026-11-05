@@ -1,6 +1,24 @@
 ---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
+import ielts from '../assets/certificates/ielts.webp';
+import ibcol from '../assets/certificates/ibcol-award-of-merit.webp';
+import bcolPrototype from '../assets/certificates/bcol-best-prototype.webp';
+import datacampSql from '../assets/certificates/datacamp-sql.webp';
+import datacampPythonIntermediate from '../assets/certificates/datacamp-python-intermediate.webp';
+import datacampPythonIntro from '../assets/certificates/datacamp-python-intro.webp';
+import datacampFinancialModeling from '../assets/certificates/datacamp-financial-modeling.webp';
+import programmingHubJavascript from '../assets/certificates/programming-hub-javascript.webp';
+import programmingHubRust from '../assets/certificates/programming-hub-rust.webp';
+import programmingHubHacking from '../assets/certificates/programming-hub-hacking.webp';
+import programmingHubCsharp from '../assets/certificates/programming-hub-csharp.webp';
+import globalConversation from '../assets/certificates/global-conversation.webp';
+import programmingHubJavaAdvanced from '../assets/certificates/programming-hub-java-advanced.webp';
+import programmingHubJava from '../assets/certificates/programming-hub-java.webp';
+import programmingHubAndroid from '../assets/certificates/programming-hub-android.webp';
+import chessFiesta from '../assets/certificates/chess-fiesta.webp';
 import {
   site,
   contact,
@@ -22,6 +40,25 @@ const graph = buildGraph([
 ]);
 
 const projectBySlug = new Map(projects.map((project) => [project.slug, project]));
+
+const certificateImages: Record<string, ImageMetadata> = {
+  ielts,
+  ibcol,
+  'bcol-prototype': bcolPrototype,
+  'datacamp-sql': datacampSql,
+  'datacamp-python-intermediate': datacampPythonIntermediate,
+  'datacamp-python-intro': datacampPythonIntro,
+  'datacamp-financial-modeling': datacampFinancialModeling,
+  'programming-hub-javascript': programmingHubJavascript,
+  'programming-hub-rust': programmingHubRust,
+  'programming-hub-hacking': programmingHubHacking,
+  'programming-hub-csharp': programmingHubCsharp,
+  'global-conversation': globalConversation,
+  'programming-hub-java-advanced': programmingHubJavaAdvanced,
+  'programming-hub-java': programmingHubJava,
+  'programming-hub-android': programmingHubAndroid,
+  'chess-fiesta': chessFiesta,
+};
 ---
 
 <BaseLayout
@@ -143,43 +180,62 @@ const projectBySlug = new Map(projects.map((project) => [project.slug, project])
       Education and credentials
     </h2>
 
-    <div class="mt-10 grid gap-10 sm:grid-cols-2">
-      <div>
-        <h3 class="flex items-center gap-2">
-          <Icon name="school" class="size-4 shrink-0 text-accent" />
-          <span class="kicker text-muted">Education</span>
-        </h3>
-        <ul class="mt-4 space-y-4">
-          {
-            education.map((entry) => (
-              <li>
-                <p class="font-medium">{entry.credential}</p>
-                <p class="mt-1 text-sm text-fg-soft">{entry.org}</p>
-                <p class="mt-1 font-mono text-xs text-muted">
-                  {entry.start} &ndash; {entry.end}
-                </p>
-              </li>
-            ))
-          }
-        </ul>
-      </div>
+    <div class="mt-10 max-w-xl">
+      <h3 class="flex items-center gap-2">
+        <Icon name="school" class="size-4 shrink-0 text-accent" />
+        <span class="kicker text-muted">Education</span>
+      </h3>
+      <ul class="mt-4 space-y-4">
+        {
+          education.map((entry) => (
+            <li>
+              <p class="font-medium">{entry.credential}</p>
+              <p class="mt-1 text-sm text-fg-soft">{entry.org}</p>
+              <p class="mt-1 font-mono text-xs text-muted">
+                {entry.start} &ndash; {entry.end}
+              </p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
 
-      <div>
-        <h3 class="flex items-center gap-2">
-          <Icon name="award" class="size-4 shrink-0 text-warm" />
-          <span class="kicker text-muted">Certifications</span>
-        </h3>
-        <ul class="mt-4 space-y-3">
-          {
-            certifications.map((cert) => (
-              <li class="text-sm text-fg-soft">
-                <span class:list={[cert.highlight && 'font-medium text-fg']}>{cert.name}</span>
-                {cert.detail && <span class="mt-0.5 block text-xs text-muted">{cert.detail}</span>}
-              </li>
-            ))
-          }
-        </ul>
-      </div>
+    <div class="mt-14">
+      <h3 class="flex items-center gap-2">
+        <Icon name="award" class="size-4 shrink-0 text-warm" />
+        <span class="kicker text-muted">Certifications</span>
+      </h3>
+      <ul class="mt-4 divide-y divide-line">
+        {
+          certifications.map((cert) => (
+            <li>
+              <details class="group">
+                <summary class="flex cursor-pointer list-none flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-4 [&::-webkit-details-marker]:hidden">
+                  <span>
+                    <span class:list={['text-base', cert.highlight && 'font-medium']}>{cert.name}</span>
+                    <span class="mt-1 block text-sm text-fg-soft">
+                      {cert.issuer}
+                      {cert.detail && <span class="text-muted"> · {cert.detail}</span>}
+                    </span>
+                  </span>
+                  <span class="flex shrink-0 items-baseline gap-4">
+                    <span class="font-mono text-xs text-muted">{cert.date}</span>
+                    <span class="text-sm text-accent group-open:hidden">View</span>
+                    <span class="hidden text-sm text-muted group-open:inline">Hide</span>
+                  </span>
+                </summary>
+                <Image
+                  src={certificateImages[cert.id]}
+                  alt={`${cert.name}, ${cert.issuer}`}
+                  widths={[640, 960, 1280]}
+                  sizes="(min-width: 48rem) 48rem, 100vw"
+                  class="mb-6 w-full max-w-3xl"
+                />
+              </details>
+            </li>
+          ))
+        }
+      </ul>
     </div>
   </section>
 

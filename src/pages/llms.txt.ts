@@ -75,7 +75,7 @@ export const GET: APIRoute = () => {
     '',
     '## Certifications',
     '',
-    ...certifications.map((cert) => `- ${cert.name}`),
+    ...certifications.map((cert) => `- ${cert.name}, ${cert.issuer} (${cert.date})`),
     '',
     '## Skills',
     '',

@@ -184,16 +184,119 @@ export const education = [
 ] as const;
 
 export type Certification = {
+  id: string;
   name: string;
+  issuer: string;
+  date: string;
   detail?: string;
   /** Highlighted credentials surface in the home proof strip. */
   highlight?: boolean;
 };
 
 export const certifications: Certification[] = [
-  { name: 'IELTS Band 8', detail: 'Overall band score, academic module', highlight: true },
-  { name: 'Associate Data Analyst in SQL' },
-  { name: 'International Blockchain Olympiad' },
+  {
+    id: 'ielts',
+    name: 'IELTS Band 8',
+    issuer: 'British Council',
+    date: 'Mar 2023',
+    detail: 'Academic. Listening 9, reading 8.5, writing 7, speaking 7.5',
+    highlight: true,
+  },
+  {
+    id: 'ibcol',
+    name: 'Award of Merit',
+    issuer: 'International Blockchain Olympiad',
+    date: 'Nov 2023',
+    detail: '2023 finals, team GreyDevs',
+  },
+  {
+    id: 'bcol-prototype',
+    name: 'Best Prototype Award',
+    issuer: 'Blockchain Olympiad Bangladesh',
+    date: '2023',
+    detail: 'Student category, team GreyDevs',
+  },
+  {
+    id: 'datacamp-sql',
+    name: 'Associate Data Analyst in SQL',
+    issuer: 'DataCamp',
+    date: 'Jun 2026',
+    detail: '39 hours',
+  },
+  {
+    id: 'datacamp-python-intermediate',
+    name: 'Intermediate Python',
+    issuer: 'DataCamp',
+    date: 'Jun 2026',
+  },
+  {
+    id: 'datacamp-python-intro',
+    name: 'Introduction to Python',
+    issuer: 'DataCamp',
+    date: 'Jun 2026',
+  },
+  {
+    id: 'datacamp-financial-modeling',
+    name: 'Financial Modeling in Excel',
+    issuer: 'DataCamp',
+    date: 'Jan 2025',
+  },
+  {
+    id: 'programming-hub-javascript',
+    name: 'JavaScript',
+    issuer: 'Programming Hub',
+    date: 'Nov 2022',
+  },
+  {
+    id: 'programming-hub-rust',
+    name: 'Rust',
+    issuer: 'Programming Hub',
+    date: 'Oct 2022',
+  },
+  {
+    id: 'programming-hub-hacking',
+    name: 'Hacking Advanced',
+    issuer: 'Programming Hub',
+    date: 'Oct 2022',
+  },
+  {
+    id: 'programming-hub-csharp',
+    name: 'C#',
+    issuer: 'Programming Hub',
+    date: 'Oct 2022',
+  },
+  {
+    id: 'global-conversation',
+    name: 'Global Conversation',
+    issuer: 'The Economist Educational Foundation',
+    date: '2021',
+    detail: 'COP26: the power of perspectives',
+  },
+  {
+    id: 'programming-hub-java-advanced',
+    name: 'Java Advanced',
+    issuer: 'Programming Hub',
+    date: 'Aug 2020',
+  },
+  {
+    id: 'programming-hub-java',
+    name: 'Java',
+    issuer: 'Programming Hub',
+    date: 'Aug 2020',
+  },
+  {
+    id: 'programming-hub-android',
+    name: 'Android development',
+    issuer: 'Programming Hub',
+    date: 'Aug 2020',
+  },
+  {
+    id: 'chess-fiesta',
+    name: 'Chess Fiesta 2020',
+    issuer: 'Chattogram Chess Club',
+    date: '2020',
+    detail: 'Selection round, Mymensingh',
+  },
 ];
 
 /** What is happening right now, for the home "Now" card. */
